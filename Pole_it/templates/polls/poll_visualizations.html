@@ -1,0 +1,204 @@
+{% extends "base.html" %}
+
+{% block title %}Poll Visualizations{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="text-center mb-4" style="font-family: 'Nunito', sans-serif; font-weight: bold; color: #333;">Poll Results</h2>
+    {% for poll in poll_data %}
+    <div class="card mb-4 shadow-lg rounded-lg" style="max-height: 500px; overflow-y: auto;">
+        <div class="card-header bg-dark text-white">
+            <h4 class="text-center mb-1">{{ poll.poll.title }}</h4>
+            <p class="text-center mb-0">{{ poll.poll.question }}</p>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <!-- Bar Chart -->
+                <div class="col-md-4">
+                    <h5 class="text-center">Bar Chart</h5>
+                    <div style="height: 200px;">
+                        <canvas id="barChart{{ forloop.counter }}" style="height: 100%;"></canvas>
+                    </div>
+                </div>
+                <!-- Pie Chart -->
+                <div class="col-md-4">
+                    <h5 class="text-center">Pie Chart</h5>
+                    <div style="height: 200px;">
+                        <canvas id="pieChart{{ forloop.counter }}" style="height: 100%;"></canvas>
+                    </div>
+                </div>
+                <!-- Doughnut Chart -->
+                <div class="col-md-4">
+                    <h5 class="text-center">Doughnut Chart</h5>
+                    <div style="height: 200px;">
+                        <canvas id="doughnutChart{{ forloop.counter }}" style="height: 100%;"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<!-- Include Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+    {% for poll in poll_data %}
+    // Bar Chart
+    const barCtx{{ forloop.counter }} = document.getElementById('barChart{{ forloop.counter }}').getContext('2d');
+    new Chart(barCtx{{ forloop.counter }}, {
+        type: 'bar',
+        data: {
+            labels: {{ poll.labels|safe }},
+            datasets: [{
+                label: 'Votes',
+                data: {{ poll.data|safe }},
+                backgroundColor: [
+                    'rgba(54, 162, 235, 0.6)',  // Blue
+                    'rgba(153, 102, 255, 0.6)', // Purple
+                    'rgba(255, 159, 64, 0.6)',  // Orange
+                    'rgba(255, 205, 86, 0.6)',  // Yellow
+                    'rgba(201, 203, 207, 0.6)', // Grey
+                ],
+                borderColor: [
+                    'rgba(54, 162, 235, 1)',    // Blue
+                    'rgba(153, 102, 255, 1)',   // Purple
+                    'rgba(255, 159, 64, 1)',    // Orange
+                    'rgba(255, 205, 86, 1)',    // Yellow
+                    'rgba(201, 203, 207, 1)',   // Grey
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    grid: {
+                        color: 'rgba(0, 0, 0, 0.1)' // Light grid lines
+                    },
+                    ticks: {
+                        color: '#333' // Dark text color for light themes
+                    }
+                },
+                x: {
+                    grid: {
+                        color: 'rgba(0, 0, 0, 0.1)' // Light grid lines
+                    },
+                    ticks: {
+                        color: '#333' // Dark text color for light themes
+                    }
+                }
+            },
+            plugins: {
+                legend: {
+                    display: true,
+                    labels: {
+                        color: '#333' // Dark legend color
+                    }
+                },
+                tooltip: {
+                    backgroundColor: 'rgba(0, 0, 0, 0.7)', // Dark background for tooltips
+                    bodyColor: '#fff', // White text color for tooltips
+                    titleColor: '#fff' // White title color for tooltips
+                }
+            }
+        }
+    });
+
+    // Pie Chart
+    const pieCtx{{ forloop.counter }} = document.getElementById('pieChart{{ forloop.counter }}').getContext('2d');
+    new Chart(pieCtx{{ forloop.counter }}, {
+        type: 'pie',
+        data: {
+            labels: {{ poll.labels|safe }},
+            datasets: [{
+                label: 'Votes',
+                data: {{ poll.data|safe }},
+                backgroundColor: [
+                    'rgba(54, 162, 235, 0.6)',  // Blue
+                    'rgba(153, 102, 255, 0.6)', // Purple
+                    'rgba(255, 159, 64, 0.6)',  // Orange
+                    'rgba(255, 205, 86, 0.6)',  // Yellow
+                    'rgba(201, 203, 207, 0.6)', // Grey
+                ],
+                borderColor: [
+                    'rgba(54, 162, 235, 1)',    // Blue
+                    'rgba(153, 102, 255, 1)',   // Purple
+                    'rgba(255, 159, 64, 1)',    // Orange
+                    'rgba(255, 205, 86, 1)',    // Yellow
+                    'rgba(201, 203, 207, 1)',   // Grey
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: true,
+                    labels: {
+                        color: '#333' // Dark legend color
+                    }
+                },
+                tooltip: {
+                    backgroundColor: 'rgba(0, 0, 0, 0.7)', // Dark background for tooltips
+                    bodyColor: '#fff', // White text color for tooltips
+                    titleColor: '#fff' // White title color for tooltips
+                }
+            }
+        }
+    });
+
+    // Doughnut Chart
+    const doughnutCtx{{ forloop.counter }} = document.getElementById('doughnutChart{{ forloop.counter }}').getContext('2d');
+    new Chart(doughnutCtx{{ forloop.counter }}, {
+        type: 'doughnut',
+        data: {
+            labels: {{ poll.labels|safe }},
+            datasets: [{
+                label: 'Votes',
+                data: {{ poll.data|safe }},
+                backgroundColor: [
+                    'rgba(54, 162, 235, 0.6)',  // Blue
+                    'rgba(153, 102, 255, 0.6)', // Purple
+                    'rgba(255, 159, 64, 0.6)',  // Orange
+                    'rgba(255, 205, 86, 0.6)',  // Yellow
+                    'rgba(201, 203, 207, 0.6)', // Grey
+                ],
+                borderColor: [
+                    'rgba(54, 162, 235, 1)',    // Blue
+                    'rgba(153, 102, 255, 1)',   // Purple
+                    'rgba(255, 159, 64, 1)',    // Orange
+                    'rgba(255, 205, 86, 1)',    // Yellow
+                    'rgba(201, 203, 207, 1)',   // Grey
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: true,
+                    labels: {
+                        color: '#333' // Dark legend color
+                    }
+                },
+                tooltip: {
+                    backgroundColor: 'rgba(0, 0, 0, 0.7)', // Dark background for tooltips
+                    bodyColor: '#fff', // White text color for tooltips
+                    titleColor: '#fff' // White title color for tooltips
+                }
+            }
+        }
+    });
+
+    {% endfor %}
+</script>
+{% endblock %}

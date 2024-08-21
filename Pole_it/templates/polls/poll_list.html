@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+
+{% comment %} poll_list.html {% endcomment %}
+
+{% block title %}Poll List{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="text-center mb-4 display-6">Available Polls</h2>
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            <div class="list-group shadow-sm">
+                {% for poll in polls %}
+                <a href="{% url 'vote' poll.id %}" class="list-group-item list-group-item-action mb-3 py-4 poll-item rounded" style="transition: transform 0.2s ease-in-out;">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h5 class="mb-1">{{ poll.title }}</h5>
+                            <p class="mb-0 text-muted">{{ poll.question }}</p>
+                        </div>
+                        <div class="badge bg-primary rounded-pill">Vote Now</div>
+                    </div>
+                </a>
+                {% empty %}
+                <p class="text-center text-muted">No polls available at the moment.</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    h2 {
+        font-weight: 700;
+        color: #333;
+    }
+
+    .poll-item {
+        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        border: 1px solid #e0e0e0;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .poll-item:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    }
+
+    .badge {
+        font-size: 0.875rem;
+    }
+
+    @media (max-width: 576px) {
+        .badge {
+            font-size: 0.75rem;
+        }
+
+        h2 {
+            font-size: 1.75rem;
+        }
+    }
+</style>
+{% endblock %}

@@ -1,0 +1,212 @@
+<title>Analytics Dashboard</title>
+
+{% block content %}
+<div class="analytics-dashboard">
+    <h1 class="dashboard-title">Analytics Dashboard</h1>
+
+    <div class="analytics-section summary-section">
+        <h2>Summary</h2>
+        <ul class="summary-list">
+            <li><strong>Total Polls:</strong> <span class="stat-number">{{ total_polls }}</span></li>
+            <li><strong>Total Votes:</strong> <span class="stat-number">{{ total_votes }}</span></li>
+        </ul>
+    </div>
+
+    <div class="analytics-section">
+        <h2>Top Polls by Votes</h2>
+        <canvas id="pollsChart" width="400" height="200"></canvas>
+        {% if top_polls %}
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Poll Title</th>
+                        <th>Number of Votes</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for poll in top_polls %}
+                    <tr>
+                        <td>{{ poll.title }}</td>
+                        <td>{{ poll.vote_count }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p class="no-data">No polls available.</p>
+        {% endif %}
+    </div>
+
+    <div class="analytics-section">
+        <h2>Top Voters</h2>
+        <canvas id="votersChart" width="400" height="200"></canvas>
+        {% if top_voters %}
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>User</th>
+                        <th>Number of Votes Cast</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for voter in top_voters %}
+                    <tr>
+                        <td>{{ voter.username }}</td>
+                        <td>{{ voter.vote_count }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p class="no-data">No voters available.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block styles %}
+<style>
+    .analytics-dashboard {
+        max-width: 900px; /* Adjusted width */
+        margin: 0 auto;
+        padding: 15px; /* Adjusted padding */
+        background: #f4f7f6;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+
+    .dashboard-title {
+        font-size: 2.2em; /* Adjusted font size */
+        color: #333;
+        margin-bottom: 15px; /* Adjusted margin */
+        text-align: center;
+    }
+
+    .analytics-section {
+        background: #fff;
+        border-radius: 8px;
+        padding: 15px; /* Adjusted padding */
+        margin-bottom: 15px; /* Adjusted margin */
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    .analytics-section h2 {
+        font-size: 1.6em; /* Adjusted font size */
+        color: #333;
+        margin-bottom: 10px; /* Adjusted margin */
+    }
+
+    .summary-list {
+        list-style: none;
+        padding: 0;
+        font-size: 1.1em; /* Adjusted font size */
+        color: #555;
+    }
+
+    .summary-list li {
+        padding: 8px 0; /* Adjusted padding */
+        border-bottom: 1px solid #ddd;
+    }
+
+    .stat-number {
+        font-weight: bold;
+        color: #007bff;
+    }
+
+    .table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 10px;
+    }
+
+    .table thead {
+        background: #007bff;
+        color: #fff;
+    }
+
+    .table th, .table td {
+        padding: 8px; /* Adjusted padding */
+        text-align: left;
+    }
+
+    .table tr:nth-child(even) {
+        background: #f9f9f9;
+    }
+
+    .table th {
+        font-weight: bold;
+    }
+
+    .no-data {
+        color: #777;
+        font-style: italic;
+    }
+
+    canvas {
+        margin: 15px 0; /* Adjusted margin */
+    }
+</style>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const pollsCtx = document.getElementById('pollsChart').getContext('2d');
+    const votersCtx = document.getElementById('votersChart').getContext('2d');
+
+    const pollsChart = new Chart(pollsCtx, {
+        type: 'bar',
+        data: {
+            labels: [{% for poll in top_polls %}'{{ poll.title }}'{% if not forloop.last %}, {% endif %}{% endfor %}],
+            datasets: [{
+                label: 'Number of Votes',
+                data: [{% for poll in top_polls %}{{ poll.vote_count }}{% if not forloop.last %}, {% endif %}{% endfor %}],
+                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                borderColor: 'rgba(75, 192, 192, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+
+    const votersChart = new Chart(votersCtx, {
+        type: 'pie',
+        data: {
+            labels: [{% for voter in top_voters %}'{{ voter.username }}'{% if not forloop.last %}, {% endif %}{% endfor %}],
+            datasets: [{
+                label: 'Number of Votes Cast',
+                data: [{% for voter in top_voters %}{{ voter.vote_count }}{% if not forloop.last %}, {% endif %}{% endfor %}],
+                backgroundColor: [
+                    'rgba(255, 99, 132, 0.2)',
+                    'rgba(54, 162, 235, 0.2)',
+                    'rgba(255, 206, 86, 0.2)',
+                    'rgba(75, 192, 192, 0.2)',
+                    'rgba(153, 102, 255, 0.2)',
+                    'rgba(255, 159, 64, 0.2)'
+                ],
+                borderColor: [
+                    'rgba(255, 99, 132, 1)',
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(255, 206, 86, 1)',
+                    'rgba(75, 192, 192, 1)',
+                    'rgba(153, 102, 255, 1)',
+                    'rgba(255, 159, 64, 1)'
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true
+        }
+    });
+});
+</script>
+{% endblock %}

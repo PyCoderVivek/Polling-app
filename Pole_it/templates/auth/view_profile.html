@@ -1,0 +1,102 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="profile-container">
+    <div class="profile-header">
+        <h2>{{ profile.user.username }}'s Profile</h2>
+    </div>
+    
+    <div class="profile-content">
+        <div class="profile-picture">
+            {% if profile.profile_picture %}
+                <img src="{{ profile.profile_picture.url }}" alt="Profile Picture">
+            {% else %}
+                <img src="{% static 'default_profile_pic.png' %}" alt="Default Profile Picture">
+            {% endif %}
+        </div>
+
+        <div class="profile-info">
+            <p class="bio">{{ profile.bio|default:"No bio available." }}</p>
+        </div>
+    </div>
+
+    <div class="profile-actions">
+        <a href="{% url 'edit_profile' %}" class="btn btn-primary">Edit Profile</a>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block styles %}
+<style>
+    .profile-container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+        background: #f9f9f9;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    
+    .profile-header {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+    
+    .profile-header h2 {
+        font-size: 2em;
+        color: #333;
+        margin: 0;
+    }
+    
+    .profile-content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+    }
+    
+    .profile-picture img {
+        border-radius: 10%;
+        border: 3px solid #ddd;
+        width: 100px;
+        height: 100px;
+        object-fit: cover;
+    }
+    
+    .profile-info {
+        text-align: center;
+        font-size: 1.2em;
+        color: #555;
+    }
+    
+    .bio {
+        margin: 0;
+        padding: 10px;
+        background: #fff;
+        border-radius: 5px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    
+    .profile-actions {
+        text-align: center;
+        margin-top: 20px;
+    }
+    
+    .btn {
+        display: inline-block;
+        padding: 10px 20px;
+        font-size: 1em;
+        color: #fff;
+        background: #007bff;
+        border-radius: 5px;
+        text-decoration: none;
+        transition: background 0.3s;
+    }
+    
+    .btn:hover {
+        background: #0056b3;
+    }
+</style>
+{% endblock %}

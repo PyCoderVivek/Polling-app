@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+
+{% block title %}HomePage{% endblock %}
+
+{% block content %}
+    <div class="text-center">
+        <h1>Welcome to MySite</h1>
+        <p>This is the homepage content.</p>
+    </div>
+
+    <!-- Profile Card -->
+    <div class="card mx-auto mt-4" style="width: 18rem;">
+        <img src="https://cdn-icons-png.flaticon.com/512/21/21104.png" class="card-img-top" alt="Profile Picture">
+        <div class="card-body">
+            <h5 class="card-title">{{ user.username }}</h5>
+            <p class="card-text">Role: {{ role }}</p>
+        </div>
+    </div>
+
+    <!-- Poll Results -->
+    <div class="container mt-5">
+        <h2 class="recent-polls-heading">Recent Polls</h2>
+        <div class="row">
+            {% for result in poll_results %}
+                <div class="col-md-4 mb-4">
+                    <a href="{% url 'poll_results' result.poll.id %}" class="card-link">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="card-title">{{ result.poll.title }}</h5>
+                            </div>
+                            <div class="card-body">
+                                <h6 class="card-subtitle mb-2 text-muted">{{ result.poll.question }}</h6>
+                                <div class="chart-container">
+                                    <canvas id="poll-chart-{{ result.poll.id }}" width="300" height="200"></canvas>
+                                </div>
+                                <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+                                <script>
+                                    document.addEventListener('DOMContentLoaded', function() {
+                                        const ctx{{ result.poll.id }} = document.getElementById('poll-chart-{{ result.poll.id }}').getContext('2d');
+                                        new Chart(ctx{{ result.poll.id }}, {
+                                            type: 'bar',
+                                            data: {
+                                                labels: {{ result.labels|safe }},
+                                                datasets: [{
+                                                    label: 'Votes',
+                                                    data: {{ result.data|safe }},
+                                                    backgroundColor: [
+                                                        'rgba(54, 162, 235, 0.6)',  // Blue
+                                                        'rgba(153, 102, 255, 0.6)', // Purple
+                                                        'rgba(255, 159, 64, 0.6)',  // Orange
+                                                        'rgba(255, 205, 86, 0.6)',  // Yellow
+                                                        'rgba(201, 203, 207, 0.6)', // Grey
+                                                    ],
+                                                    borderColor: [
+                                                        'rgba(54, 162, 235, 1)',    // Blue
+                                                        'rgba(153, 102, 255, 1)',   // Purple
+                                                        'rgba(255, 159, 64, 1)',    // Orange
+                                                        'rgba(255, 205, 86, 1)',    // Yellow
+                                                        'rgba(201, 203, 207, 1)',   // Grey
+                                                    ],
+                                                    borderWidth: 1
+                                                }]
+                                            },
+                                            options: {
+                                                scales: {
+                                                    y: {
+                                                        beginAtZero: true
+                                                    }
+                                                }
+                                            }
+                                        });
+                                    });
+                                </script>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            {% empty %}
+                <p>No polls available or results to display.</p>
+            {% endfor %}
+        </div>
+    </div>
+
+    <style>
+        /* Import Google Font */
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@600&display=swap');
+
+        /* Styling for Recent Polls Heading */
+        .recent-polls-heading {
+            font-family: 'Poppins', sans-serif;
+            font-size: 2rem;
+            font-weight: 600;
+            text-align: center;
+            color: #343a40;
+            margin-bottom: 2rem;
+            border-bottom: 3px solid #007bff;
+            display: inline-block;
+            padding-bottom: 10px;
+        }
+
+        /* Remove text decoration from the card links */
+        .card-link {
+            text-decoration: none;
+            color: inherit;
+        }
+    </style>
+{% endblock %}

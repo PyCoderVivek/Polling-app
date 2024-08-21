@@ -1,0 +1,200 @@
+<!-- templates/polls/results.html -->
+{% extends "base.html" %}
+
+{% block title %}Poll Results{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="text-center mb-4">{{ poll.title }} Results</h2>
+    
+    <!-- Poll Question Card -->
+    <div class="card shadow-lg rounded-lg">
+        <div class="card-header bg-primary text-white rounded-top">
+            <h4 class="mb-0">{{ poll.question }} </h4>
+        </div>
+        <div class="card-body">
+            <b>already voted </b>
+            <ul class="list-group list-group-flush">
+                {% for option, votes in option_votes.items %}
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    {{ option.option_text }}
+                    <span class="badge bg-primary rounded-pill">{{ votes }} votes</span>
+                </li>
+                {% empty %}
+                <li class="list-group-item text-center">No options available.</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+
+    <!-- Show Plot Button -->
+    <div class="text-center mt-4">
+        <button id="showPlotButton" class="btn btn-success px-4 py-2 rounded-pill shadow-sm">Show Plot</button>
+    </div>
+
+    <!-- Plot Type Dropdown -->
+    <div class="text-center mt-2">
+        <select id="plotType" class="form-select w-auto mx-auto rounded-pill shadow-sm">
+            <option value="bar">Bar</option>
+            <option value="pie">Pie</option>
+            <option value="doughnut">Doughnut</option>
+        </select>
+    </div>
+
+    <!-- Plotting Card (Initially Hidden) -->
+    <div id="plottingCard" class="card mt-3 shadow-lg rounded-lg" style="display: none; width: 90%; max-width: 700px; margin: auto;">
+        <div class="card-header bg-secondary text-white rounded-top">
+            <h4 class="text-center mb-0">Poll Results Chart</h4>
+        </div>
+        <div class="card-body">
+            <canvas id="resultsChart" style="width: 100%; height: 400px;"></canvas>
+        </div>
+    </div>
+</div>
+
+<!-- Include Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<!-- Script to Handle Show/Hide Plotting Card and Change Plot Type -->
+<script>
+    document.getElementById('showPlotButton').addEventListener('click', function() {
+        const plottingCard = document.getElementById('plottingCard');
+        if (plottingCard.style.display === "none") {
+            plottingCard.style.display = "block";
+            this.textContent = "Hide Plot"; // Change button text to "Hide Plot"
+        } else {
+            plottingCard.style.display = "none";
+            this.textContent = "Show Plot"; // Change button text back to "Show Plot"
+        }
+    });
+
+    // Initial Chart.js Plot
+    const ctx = document.getElementById('resultsChart').getContext('2d');
+    let resultsChart = new Chart(ctx, {
+        type: 'bar',  // Initial type
+        data: {
+            labels: {{ labels|safe }},
+            datasets: [{
+                label: 'Votes',
+                data: {{ data|safe }},
+                backgroundColor: [
+                    'rgba(54, 162, 235, 0.6)',  // Blue
+                    'rgba(153, 102, 255, 0.6)', // Purple
+                    'rgba(255, 159, 64, 0.6)',  // Orange
+                    'rgba(255, 205, 86, 0.6)',  // Yellow
+                    'rgba(201, 203, 207, 0.6)'  // Grey
+                ],
+                borderColor: [
+                    'rgba(54, 162, 235, 1)',    // Blue
+                    'rgba(153, 102, 255, 1)',   // Purple
+                    'rgba(255, 159, 64, 1)',    // Orange
+                    'rgba(255, 205, 86, 1)',    // Yellow
+                    'rgba(201, 203, 207, 1)'    // Grey
+                ],
+                borderWidth: 2
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    grid: {
+                        color: 'rgba(0, 0, 0, 0.1)' // Light grid lines for dark themes
+                    },
+                    ticks: {
+                        color: 'rgba(0, 0, 0, 0.8)' // Darker text color for light themes
+                    }
+                },
+                x: {
+                    ticks: {
+                        color: 'rgba(0, 0, 0, 0.8)' // Darker text color for light themes
+                    }
+                }
+            },
+            plugins: {
+                legend: {
+                    display: true,
+                    labels: {
+                        color: '#333' // Text color for legend
+                    }
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(tooltipItem) {
+                            return tooltipItem.label + ': ' + tooltipItem.raw + ' votes';
+                        }
+                    }
+                }
+            }
+        }
+    });
+
+    // Change chart type based on dropdown selection
+    document.getElementById('plotType').addEventListener('change', function() {
+        const newType = this.value;
+        resultsChart.destroy();
+        resultsChart = new Chart(ctx, {
+            type: newType,
+            data: {
+                labels: {{ labels|safe }},
+                datasets: [{
+                    label: 'Votes',
+                    data: {{ data|safe }},
+                    backgroundColor: [
+                        'rgba(54, 162, 235, 0.6)',  // Blue
+                        'rgba(153, 102, 255, 0.6)', // Purple
+                        'rgba(255, 159, 64, 0.6)',  // Orange
+                        'rgba(255, 205, 86, 0.6)',  // Yellow
+                        'rgba(201, 203, 207, 0.6)'  // Grey
+                    ],
+                    borderColor: [
+                        'rgba(54, 162, 235, 1)',    // Blue
+                        'rgba(153, 102, 255, 1)',   // Purple
+                        'rgba(255, 159, 64, 1)',    // Orange
+                        'rgba(255, 205, 86, 1)',    // Yellow
+                        'rgba(201, 203, 207, 1)'    // Grey
+                    ],
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: {
+                            color: 'rgba(0, 0, 0, 0.1)' // Light grid lines for dark themes
+                        },
+                        ticks: {
+                            color: 'rgba(0, 0, 0, 0.8)' // Darker text color for light themes
+                        }
+                    },
+                    x: {
+                        ticks: {
+                            color: 'rgba(0, 0, 0, 0.8)' // Darker text color for light themes
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: true,
+                        labels: {
+                            color: '#333' // Text color for legend
+                        }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(tooltipItem) {
+                                return tooltipItem.label + ': ' + tooltipItem.raw + ' votes';
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    });
+</script>
+{% endblock %}

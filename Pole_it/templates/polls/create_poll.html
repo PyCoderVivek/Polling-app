@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% comment %} create_poll.html {% endcomment %}
+
+{% block title %}Create Poll{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center mt-5">
+  <div class="col-md-8">
+    <div class="card shadow-sm border-0">
+      <div class="card-header bg-primary text-white text-center rounded-top">
+        <h2 class="mb-0">Create a New Poll</h2>
+      </div>
+      <div class="card-body p-4">
+        <form method="post" action="{% url 'create_poll' %}">
+          {% csrf_token %}
+          <div class="mb-3">
+            {{ poll_form.as_p }}
+          </div>
+          <div id="options-container" class="mb-4">
+            <label class="form-label">Options</label>
+            <div class="input-group mb-2 option-item">
+              <input type="text" class="form-control" name="options" placeholder="Option 1" required>
+              <button type="button" class="btn btn-outline-danger remove-option"><i class="bi bi-x-lg"></i></button>
+            </div>
+            <div class="input-group mb-2 option-item">
+              <input type="text" class="form-control" name="options" placeholder="Option 2" required>
+              <button type="button" class="btn btn-outline-danger remove-option"><i class="bi bi-x-lg"></i></button>
+            </div>
+          </div>
+          <div class="d-flex justify-content-between mb-4">
+            <button type="button" id="add-option" class="btn btn-outline-secondary"><i class="bi bi-plus-lg"></i> Add Option</button>
+          </div>
+          <button type="submit" class="btn btn-primary w-100">Create Poll</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Icons from Bootstrap Icons CDN -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+
+<script>
+  document.getElementById('add-option').addEventListener('click', function() {
+    const container = document.getElementById('options-container');
+    const optionCount = container.querySelectorAll('.option-item').length;
+    const optionDiv = document.createElement('div');
+    optionDiv.className = 'input-group mb-2 option-item';
+    optionDiv.innerHTML = `
+      <input type="text" class="form-control" name="options" placeholder="Option ${optionCount + 1}" required>
+      <button type="button" class="btn btn-outline-danger remove-option"><i class="bi bi-x-lg"></i></button>
+    `;
+    container.appendChild(optionDiv);
+  });
+
+  document.getElementById('options-container').addEventListener('click', function(e) {
+    if (e.target.classList.contains('remove-option') || e.target.closest('.remove-option')) {
+      e.target.closest('.option-item').remove();
+    }
+  });
+</script>
+{% endblock %}
