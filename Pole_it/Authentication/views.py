@@ -62,8 +62,6 @@ def home_view(request):
     }
     return render(request, 'HomePage.html', context)
 
-
-
 def login_view(request):
     if request.method == "POST":
         form = CustomLoginForm(request, data=request.POST)
@@ -81,15 +79,12 @@ def login_view(request):
                 elif not is_admin:
                     login(request, user)
                     return redirect('home')  # Redirect to the home page or user dashboard
-                else:
-                    messages.error(request, "Admin credentials are incorrect.")
-            else:
-                messages.error(request, "Invalid username or password.")
+        else:
+            messages.error(request, "UserName or Password is Invalid !")  # Handle invalid form submission
     else:
         form = CustomLoginForm()
 
     return render(request, 'auth/login.html', {'form': form})
-
 
 def signup_view(request):
     if request.method == "POST":

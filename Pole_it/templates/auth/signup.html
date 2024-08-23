@@ -1,5 +1,3 @@
-{% comment %} Authenticate/signup.html {% endcomment %}
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,144 +6,88 @@
   <title>Sign Up</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <style>
+    /* Background animation with floating images */
     body {
-      background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
-      background-size: 400% 400%;
-      animation: gradientBG 15s ease infinite;
+      background: linear-gradient(45deg, #1e3c72, #2a5298);
       height: 100vh;
       display: flex;
-      align-items: center;
       justify-content: center;
-      margin: 0;
+      align-items: center;
       overflow: hidden;
+      position: relative;
     }
 
-    @keyframes gradientBG {
-      0% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
-    }
-
-    .poll-animation {
+    .floating-images {
       position: absolute;
-      top: 0;
-      left: 0;
       width: 100%;
       height: 100%;
       overflow: hidden;
-      z-index: 1;
+      z-index: 0;
     }
 
-    .poll-animation div {
+    .floating-images img {
       position: absolute;
-      width: 60px;
-      height: 60px;
-      background: rgba(255, 255, 255, 0.1);
-      border-radius: 10px;
-      transform: rotate(45deg);
-      animation: pollMove 20s linear infinite;
-      opacity: 0.6;
+      width: 150px;
+      height: 150px;
+      opacity: 0.5;
+      animation: floatImage 20s infinite linear;
     }
 
-    .poll-animation div:nth-child(1) {
-      top: 10%;
-      left: 10%;
-      animation-duration: 10s;
-      animation-delay: 0s;
+    @keyframes floatImage {
+      from { transform: translateY(-100%) rotate(0deg); }
+      to { transform: translateY(100%) rotate(360deg); }
     }
 
-    .poll-animation div:nth-child(2) {
-      top: 30%;
-      left: 30%;
-      animation-duration: 12s;
-      animation-delay: 2s;
-    }
+    /* Customize position of each floating image */
+    .floating-images img:nth-child(1) { left: 10%; animation-delay: 0s; }
+    .floating-images img:nth-child(2) { left: 50%; animation-delay: 2s; }
+    .floating-images img:nth-child(3) { left: 80%; animation-delay: 0s; }
 
-    .poll-animation div:nth-child(3) {
-      top: 50%;
-      left: 50%;
-      animation-duration: 15s;
-      animation-delay: 4s;
-    }
-
-    .poll-animation div:nth-child(4) {
-      top: 70%;
-      left: 70%;
-      animation-duration: 18s;
-      animation-delay: 6s;
-    }
-
-    .poll-animation div:nth-child(5) {
-      top: 90%;
-      left: 90%;
-      animation-duration: 20s;
-      animation-delay: 8s;
-    }
-
-    @keyframes pollMove {
-      0% {
-        transform: translateY(0) rotate(45deg);
-      }
-      50% {
-        transform: translateY(-50px) rotate(45deg);
-      }
-      100% {
-        transform: translateY(0) rotate(45deg);
-      }
-    }
-
+    /* Darker card styling */
     .card {
-      background-color: rgba(255, 255, 255, 0.85);
-      border-radius: 15px;
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
       position: relative;
-      z-index: 2;
+      z-index: 1;
+      box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.5);
+      background-color: #191870;
+      color: white;
     }
 
-    .card-header {
-      background-color: transparent;
-      border-bottom: none;
-    }
-
-    .form-control {
-      border-radius: 10px;
-      border: 1px solid #ddd;
-      box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+    .card-header h2 {
+      color: #ffffff;
     }
 
     .btn-primary {
-      background-color: #008CBA;
-      border-color: #008CBA;
-      border-radius: 10px;
+      background-color: #007bff;
+      border-color: #007bff;
     }
 
     .btn-primary:hover {
-      background-color: #005f73;
-      border-color: #005f73;
+      background-color: #0056b3;
+      border-color: #004085;
     }
 
     a {
-      color: #008CBA;
+      color: #007bff;
     }
 
     a:hover {
-      color: #005f73;
+      color: #0056b3;
     }
+
   </style>
 </head>
 <body>
-  <div class="poll-animation">
-    <div></div>
-    <div></div>
-    <div></div>
-    <div></div>
-    <div></div>
+  <div class="floating-images">
+    <img src="https://static.vecteezy.com/system/resources/previews/009/583/364/original/3d-illustration-customer-survey-for-digital-marketing-png.png" alt="Floating Image 1">
+    <img src="https://cdn3d.iconscout.com/3d/premium/thumb/survey-6610261-5498887.png?f=webp" alt="Floating Image 2">
+    <img src="https://cdn3d.iconscout.com/3d/premium/thumb/voters-3d-icon-download-in-png-blend-fbx-gltf-file-formats--like-logo-vote-voting-election-voter-democratic-elections-pack-politics-icons-7946416.png" alt="Floating Image 3">
+   
   </div>
-
+  
   <div class="container">
-    <div class="row justify-content-center">
+    <div class="row justify-content-center mt-5">
       <div class="col-md-6">
-        <div class="card p-4">
+        <div class="card">
           <div class="card-header text-center">
             <h2>Sign Up</h2>
           </div>
