@@ -35,7 +35,7 @@ Follow these steps to get the project up and running locally:
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/USERNAME/REPOSITORY.git
+git clone https://github.com/PyCoderVivek/Polling-app.git
 cd REPOSITORY
 ```
 
