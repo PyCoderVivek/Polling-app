@@ -8,6 +8,8 @@ from django.contrib.auth.models import User
 class Poll(models.Model):
     title = models.CharField(max_length=200)
     question = models.TextField()
+    image = models.ImageField(upload_to='poll_images/', null=True, blank=True)  # New image field
+
 
     def __str__(self):
         return self.title

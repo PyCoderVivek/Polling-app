@@ -1,7 +1,5 @@
 {% extends "base.html" %}
 
-{% comment %} create_poll.html {% endcomment %}
-
 {% block title %}Create Poll{% endblock %}
 
 {% block content %}
@@ -12,10 +10,14 @@
         <h2 class="mb-0">Create a New Poll</h2>
       </div>
       <div class="card-body p-4">
-        <form method="post" action="{% url 'create_poll' %}">
+        <form method="post" action="{% url 'create_poll' %}" enctype="multipart/form-data">
           {% csrf_token %}
           <div class="mb-3">
             {{ poll_form.as_p }}
+          </div>
+          <div class="mb-4">
+            <label for="poll-image" class="form-label">Upload an Image (optional)</label>
+            <input type="file" class="form-control" id="poll-image" name="poll_image" accept="image/*">
           </div>
           <div id="options-container" class="mb-4">
             <label class="form-label">Options</label>

@@ -6,7 +6,7 @@ from .models import Poll, PollOption
 class PollForm(forms.ModelForm):
     class Meta:
         model = Poll
-        fields = ['title', 'question']
+        fields = ['title', 'question','image']
 
 class VoteForm(forms.Form):
     choice = forms.ChoiceField(widget=forms.RadioSelect)

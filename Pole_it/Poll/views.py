@@ -33,7 +33,7 @@ def poll_visualizations_view(request):
 
 def create_poll_view(request):
     if request.method == "POST":
-        poll_form = PollForm(request.POST)
+        poll_form = PollForm(request.POST, request.FILES)  # Handle file upload
         if poll_form.is_valid():
             poll = poll_form.save()
             options = request.POST.getlist('options')
