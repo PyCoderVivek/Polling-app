@@ -3,48 +3,50 @@
 {% block title %}Create Poll{% endblock %}
 
 {% block content %}
-<div class="row justify-content-center mt-5">
-  <div class="col-md-8">
-    <div id="form-card" class="card shadow-lg border-0 animate-card">
-      <div class="card-header bg-primary text-white text-center rounded-top">
-        <h2 class="mb-0">Create a New Poll</h2>
-      </div>
-      <div class="card-body p-4">
-        <form method="post" action="{% url 'create_poll' %}" enctype="multipart/form-data">
-          {% csrf_token %}
-          <div class="mb-3">
-            {{ poll_form.as_p }}
-          </div>
-          <div class="mb-4">
-            <label for="poll-image" class="form-label">Upload an Image (optional)</label>
-            <input type="file" class="form-control" id="poll-image" name="poll_image" accept="image/*">
-          </div>
-          <div id="options-container" class="mb-4">
-            <label class="form-label">Options</label>
-            <div class="input-group mb-2 option-item">
-              <input type="text" class="form-control" name="options" placeholder="Option 1" required>
-              <button type="button" class="btn btn-outline-danger remove-option"><i class="bi bi-x-lg"></i></button>
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <div id="form-card" class="card shadow-sm border-0 animate-card">
+        <div class="card-header bg-primary text-white text-center rounded-top">
+          <h2 class="mb-0">Create a New Poll</h2>
+        </div>
+        <div class="card-body p-4">
+          <form method="post" action="{% url 'create_poll' %}" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="mb-3">
+              {{ poll_form.as_p }}
             </div>
-            <div class="input-group mb-2 option-item">
-              <input type="text" class="form-control" name="options" placeholder="Option 2" required>
-              <button type="button" class="btn btn-outline-danger remove-option"><i class="bi bi-x-lg"></i></button>
+            <div class="mb-4">
+              <label for="poll-image" class="form-label">Upload an Image (optional)</label>
+              <input type="file" class="form-control" id="poll-image" name="poll_image" accept="image/*">
             </div>
-          </div>
-          <div class="d-flex justify-content-between mb-4">
-            <button type="button" id="add-option" class="btn btn-outline-secondary"><i class="bi bi-plus-lg"></i> Add Option</button>
-          </div>
-          <button type="submit" class="btn btn-primary w-100 animate-submit">Create Poll</button>
-        </form>
+            <div id="options-container" class="mb-4">
+              <label class="form-label">Options</label>
+              <div class="input-group mb-2 option-item">
+                <input type="text" class="form-control" name="options" placeholder="Option 1" required>
+                <button type="button" class="btn btn-outline-danger remove-option"><i class="bi bi-x-lg"></i></button>
+              </div>
+              <div class="input-group mb-2 option-item">
+                <input type="text" class="form-control" name="options" placeholder="Option 2" required>
+                <button type="button" class="btn btn-outline-danger remove-option"><i class="bi bi-x-lg"></i></button>
+              </div>
+            </div>
+            <div class="d-flex justify-content-between mb-4">
+              <button type="button" id="add-option" class="btn btn-outline-secondary"><i class="bi bi-plus-lg"></i> Add Option</button>
+            </div>
+            <button type="submit" class="btn btn-primary w-100 animate-submit">Create Poll</button>
+          </form>
+        </div>
       </div>
     </div>
-  </div>
 
-  <!-- Right Card for Displaying the Uploaded Photo -->
-  <div id="photo-card" class="col-md-4 mt-5">
-    <div class="card shadow-lg border-0 animate-photo-card d-none">
-      <div class="card-body p-4 text-center">
-        <h5 class="card-title">Uploaded Image</h5>
-        <img id="uploaded-photo" src="#" alt="Uploaded Image" class="img-fluid rounded">
+    <!-- Right Card for Displaying the Uploaded Photo -->
+    <div id="photo-card" class="col-md-4 mt-5">
+      <div class="card shadow-sm border-0 animate-photo-card d-none">
+        <div class="card-body p-4 text-center">
+          <h5 class="card-title">Uploaded Image</h5>
+          <img id="uploaded-photo" src="#" alt="Uploaded Image" class="img-fluid rounded">
+        </div>
       </div>
     </div>
   </div>
@@ -53,27 +55,32 @@
 <!-- Icons from Bootstrap Icons CDN -->
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
 
-<!-- Custom CSS for animations and aesthetics -->
 <style>
+  /* Card Animation */
   .animate-card {
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    transition: transform 0.4s ease, box-shadow 0.4s ease;
+    background-color: #f9f9f9;
   }
 
   .animate-card:hover {
     transform: scale(1.02);
-    box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.15);
+    box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.1);
   }
 
+  /* Submit Button Animation */
   .animate-submit {
     transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+    background-color: #007bff;
+    color: white;
   }
 
   .animate-submit:hover {
-    background-color: #004085;
-    transform: translateY(-3px);
-    box-shadow: 0px 5px 15px rgba(0, 64, 133, 0.4);
+    background-color: #0056b3;
+    transform: translateY(-2px);
+    box-shadow: 0px 5px 15px rgba(0, 86, 179, 0.3);
   }
 
+  /* Secondary Button Styling */
   .btn-outline-secondary {
     border-color: #6c757d;
     color: #6c757d;
@@ -84,48 +91,40 @@
     color: #fff;
   }
 
+  /* Form Control Styling */
   .form-control {
     transition: box-shadow 0.3s ease, border-color 0.3s ease;
+    border-radius: 8px;
   }
 
   .form-control:focus {
-    box-shadow: 0px 0px 10px rgba(0, 123, 255, 0.5);
+    box-shadow: 0px 0px 8px rgba(0, 123, 255, 0.5);
     border-color: #007bff;
   }
 
+  /* Option Input Styling */
   .option-item .form-control {
-    background-color: #f8f9fa;
-    border: 1px solid #ced4da;
+    background-color: #f5f5f5;
+    border: 1px solid #ddd;
   }
 
   .option-item .form-control:focus {
     background-color: #fff;
   }
 
+  /* Card Header Gradient */
   .card-header {
-    background: linear-gradient(135deg, #007bff, #6610f2);
+    background: linear-gradient(135deg, #4abef0);
   }
 
+  /* Card Styling */
   .card {
     border-radius: 15px;
   }
 
-  /* Center the card initially */
-  .row {
-    display: flex;
-    justify-content: center;
-    transition: justify-content 0.5s ease;
-  }
-
-  /* Move the card slightly to the right */
-  .row.shift-right {
-    justify-content: start;
-    padding-left: 50px;
-  }
-
-  /* Photo card animation */
+  /* Photo Card Animation */
   .animate-photo-card {
-    transition: opacity 0.5s ease, transform 0.5s ease;
+    transition: opacity 0.4s ease, transform 0.4s ease;
   }
 
   .photo-card-visible {
@@ -135,12 +134,13 @@
 
   .photo-card-hidden {
     opacity: 0;
-    transform: translateY(-20px);
+    transform: translateY(-15px);
   }
 
   #uploaded-photo {
-    max-height: 200px;
+    max-height: 220px;
     object-fit: cover;
+    border-radius: 10px;
   }
 </style>
 
@@ -163,7 +163,6 @@
     }
   });
 
-  // Move the form card to the right and display the photo card after an image is uploaded
   document.getElementById('poll-image').addEventListener('change', function(e) {
     const row = document.querySelector('.row');
     const photoCard = document.getElementById('photo-card');
@@ -180,15 +179,16 @@
         }, 10);
       };
       reader.readAsDataURL(e.target.files[0]);
-      
+
       row.classList.add('shift-right');
     } else {
       photoCard.querySelector('.card').classList.add('photo-card-hidden');
       setTimeout(function() {
         photoCard.querySelector('.card').classList.add('d-none');
         photoCard.querySelector('.card').classList.remove('photo-card-visible');
-      }, 500);
+      }, 400);
     }
   });
 </script>
+
 {% endblock %}

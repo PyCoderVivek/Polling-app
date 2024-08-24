@@ -4,6 +4,10 @@
     {% load static %}
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    
+<head>
+    <link rel="icon" href="https://www-cdn.polleverywhere.com/assets/three-up/see-everyones-results-21a3eb9768bc7c630abefc8ab0785d4c6031629bc967a0d70805934816d2848b.png" type="image/png">
     <title>{% block title %}HomePage{% endblock %}</title>
 
     <!-- Google Fonts -->
@@ -12,35 +16,47 @@
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
+    <!-- Custom CSS -->
     <style>
+        /* General Styling */
         body {
             font-family: 'Poppins', sans-serif;
-            background-color: #f8f9fa;
-            color: #343a40;
+            background: linear-gradient(135deg, #f0f4f8, #c0c9d2);
+            color: #333;
             padding-top: 56px; /* Adjusted for fixed navbar */
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
 
         /* Navbar */
         .navbar {
-            background-color: #ffffff;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-            padding: 15px;
+            background: #ffffff;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            padding: 20px 30px;
             font-weight: 500;
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
         }
 
-        /* Search bar */
-        .search-bar {
-            margin-right: 15px; /* Adjust this value to move it more to the right */
+        .navbar:hover {
+            background-color: #f8f9fa;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .navbar-brand {
+            font-size: 28px;
+            font-weight: 600;
+            color: #007bff;
+        }
+
+        .navbar-toggler {
+            border: none;
         }
 
         /* Card Styles */
         .card {
             border-radius: 15px;
             box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
-            background-color: #ffffff;
-            color: #343a40;
-            padding: 30px;
-            margin-bottom: 40px;
+            background: #ffffff;
+            color: #333;
             transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
 
@@ -49,36 +65,116 @@
             box-shadow: 0 12px 20px rgba(0, 0, 0, 0.15);
         }
 
-        /* Buttons */
-        .btn-custom {
-            border-radius: 30px;
-            padding: 12px 25px;
-            font-weight: 600;
-            font-size: 16px;
-            transition: background-color 0.3s ease, box-shadow 0.3s ease;
+        .card-title {
+            font-size: 1.5rem;
+            color: #007bff;
+            transition: color 0.3s ease;
         }
 
-        .btn-primary-custom {
+        .card-title:hover {
+            color: #0056b3;
+        }
+
+        .card-subtitle {
+            color: #6c757d;
+        }
+
+        /* Profile Card */
+        .profile-card {
+            width: 16rem;
+            border: 1px solid #dee2e6;
+            border-radius: 15px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            background: #ffffff;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .profile-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Poll Card */
+        .poll-card {
+            border: 1px solid #dee2e6;
+            border-radius: 15px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            background: #ffffff;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .poll-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Floating Button */
+        .btn-floating {
+            position: fixed;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
             background-color: #007bff;
-            border: none;
             color: white;
-        }
-
-        .btn-primary-custom:hover {
-            background-color: #0056b3;
+            border-radius: 50%;
+            height: 60px;
+            width: 60px;
+            font-size: 28px;
             box-shadow: 0 8px 16px rgba(0, 91, 187, 0.2);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: all 0.3s ease;
+            z-index: 1000;
         }
 
-        /* Smooth transitions */
-        * {
-            transition: background-color 0.3s ease, color 0.3s ease;
+        .btn-floating:hover {
+            background-color: #0056b3;
+            transform: scale(1.1) translateX(-50%);
+        }
+
+        /* Create Poll Option */
+        .create-poll-hidden {
+            display: none;
+            opacity: 0;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            position: fixed;
+            bottom: 120px;
+            left: 50%;
+            transform: translateX(-50%) scale(0.8);
+            z-index: 999;
+        }
+
+        .create-poll-visible {
+            display: block;
+            opacity: 1;
+            transform: translateX(-50%) scale(1);
+        }
+
+        /* Button Click Animation */
+        .btn-floating.clicked {
+            animation: bounce 0.5s;
+        }
+
+        @keyframes bounce {
+            0% { transform: scale(1) translateX(-50%); }
+            50% { transform: scale(1.2) translateX(-50%); }
+            100% { transform: scale(1) translateX(-50%); }
+        }
+
+        /* Responsive Styling */
+        @media (max-width: 768px) {
+            .search-bar {
+                margin-right: 0;
+                margin-top: 10px;
+            }
         }
     </style>
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-light fixed-top">
         <div class="container-fluid">
-            <a class="navbar-brand" href="{% url 'home' %}" style="font-size: 24px; font-weight: 600;">Polling App</a>
+            <a class="navbar-brand" href="{% url 'home' %}">Polling App</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -117,6 +213,19 @@
         {% endblock %}
     </div>
 
+    <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Custom JS -->
+    <script>
+        const floatingBtn = document.getElementById('floating-btn');
+        const createPollOption = document.getElementById('create-poll-option');
+
+        floatingBtn.addEventListener('click', () => {
+            createPollOption.classList.toggle('create-poll-visible');
+            floatingBtn.classList.toggle('clicked');
+        });
+    </script>
 </body>
 </html>

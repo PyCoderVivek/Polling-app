@@ -1,4 +1,7 @@
-<title>Analytics Dashboard</title>
+<head>
+    <link rel="icon" href="https://logos-world.net/wp-content/uploads/2021/02/Google-Analytics-Logo.png" type="image/png">
+    <title>Analytics Dashboard</title>
+</head>
 
 {% block content %}
 <div class="analytics-dashboard">
@@ -66,57 +69,105 @@
 
 {% block styles %}
 <style>
+    /* General Styles */
+    body {
+        background-color: #1c1f26;
+        color: #e0e6ed;
+        font-family: 'Roboto', sans-serif;
+        transition: background-color 0.3s, color 0.3s;
+    }
+
+    a {
+        color: #007bff;
+        transition: color 0.3s;
+    }
+
+    a:hover {
+        color: #0056b3;
+    }
+
     .analytics-dashboard {
-        max-width: 900px; /* Adjusted width */
+        max-width: 900px;
         margin: 0 auto;
-        padding: 15px; /* Adjusted padding */
-        background: #f4f7f6;
+        padding: 20px;
+        background: #2b2f3a;
         border-radius: 8px;
-        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6);
+        transition: transform 0.3s, background 0.3s;
+    }
+
+    .analytics-dashboard:hover {
+        transform: scale(1.02);
+        background: #343a46;
     }
 
     .dashboard-title {
-        font-size: 2.2em; /* Adjusted font size */
-        color: #333;
-        margin-bottom: 15px; /* Adjusted margin */
+        font-size: 2.4em;
+        color: #ffffff;
+        margin-bottom: 20px;
         text-align: center;
+        transition: color 0.3s, transform 0.3s;
+    }
+
+    .dashboard-title:hover {
+        color: #007bff;
+        transform: translateY(-5px);
     }
 
     .analytics-section {
-        background: #fff;
+        background: #353a47;
         border-radius: 8px;
-        padding: 15px; /* Adjusted padding */
-        margin-bottom: 15px; /* Adjusted margin */
-        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        padding: 20px;
+        margin-bottom: 20px;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.6);
+        transition: transform 0.3s, background 0.3s;
+    }
+
+    .analytics-section:hover {
+        transform: scale(1.01);
+        background: #3d4354;
     }
 
     .analytics-section h2 {
-        font-size: 1.6em; /* Adjusted font size */
-        color: #333;
-        margin-bottom: 10px; /* Adjusted margin */
+        font-size: 1.8em;
+        color: #ffffff;
+        margin-bottom: 15px;
+        border-bottom: 2px solid #007bff;
+        padding-bottom: 5px;
+        transition: color 0.3s;
+    }
+
+    .analytics-section h2:hover {
+        color: #007bff;
     }
 
     .summary-list {
         list-style: none;
         padding: 0;
-        font-size: 1.1em; /* Adjusted font size */
-        color: #555;
+        font-size: 1.2em;
+        color: #e0e6ed;
     }
 
     .summary-list li {
-        padding: 8px 0; /* Adjusted padding */
-        border-bottom: 1px solid #ddd;
+        padding: 10px 0;
+        border-bottom: 1px solid #555;
     }
 
     .stat-number {
         font-weight: bold;
         color: #007bff;
+        transition: color 0.3s, transform 0.3s;
+    }
+
+    .stat-number:hover {
+        color: #66ccff;
+        transform: scale(1.1);
     }
 
     .table {
         width: 100%;
         border-collapse: collapse;
-        margin-top: 10px;
+        margin-top: 15px;
     }
 
     .table thead {
@@ -125,12 +176,17 @@
     }
 
     .table th, .table td {
-        padding: 8px; /* Adjusted padding */
+        padding: 10px;
         text-align: left;
+        transition: background 0.3s, color 0.3s;
     }
 
     .table tr:nth-child(even) {
-        background: #f9f9f9;
+        background: #2b2f3a;
+    }
+
+    .table tr:hover {
+        background: #353a47;
     }
 
     .table th {
@@ -138,12 +194,12 @@
     }
 
     .no-data {
-        color: #777;
+        color: #aaa;
         font-style: italic;
     }
 
     canvas {
-        margin: 15px 0; /* Adjusted margin */
+        margin: 20px 0;
     }
 </style>
 {% endblock %}
@@ -162,8 +218,8 @@ document.addEventListener('DOMContentLoaded', function () {
             datasets: [{
                 label: 'Number of Votes',
                 data: [{% for poll in top_polls %}{{ poll.vote_count }}{% if not forloop.last %}, {% endif %}{% endfor %}],
-                backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                borderColor: 'rgba(75, 192, 192, 1)',
+                backgroundColor: 'rgba(0, 123, 255, 0.2)',
+                borderColor: 'rgba(0, 123, 255, 1)',
                 borderWidth: 1
             }]
         },
@@ -171,7 +227,28 @@ document.addEventListener('DOMContentLoaded', function () {
             responsive: true,
             scales: {
                 y: {
-                    beginAtZero: true
+                    beginAtZero: true,
+                    ticks: {
+                        color: '#e0e6ed',
+                    },
+                    grid: {
+                        color: '#555',
+                    }
+                },
+                x: {
+                    ticks: {
+                        color: '#e0e6ed',
+                    },
+                    grid: {
+                        color: '#555',
+                    }
+                }
+            },
+            plugins: {
+                legend: {
+                    labels: {
+                        color: '#e0e6ed'
+                    }
                 }
             }
         }
@@ -204,7 +281,14 @@ document.addEventListener('DOMContentLoaded', function () {
             }]
         },
         options: {
-            responsive: true
+            responsive: true,
+            plugins: {
+                legend: {
+                    labels: {
+                        color: '#e0e6ed'
+                    }
+                }
+            }
         }
     });
 });

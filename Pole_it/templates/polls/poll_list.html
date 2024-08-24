@@ -1,23 +1,21 @@
 {% extends "base.html" %}
 
-{% comment %} poll_list.html {% endcomment %}
-
 {% block title %}Poll List{% endblock %}
 
 {% block content %}
 <div class="container mt-5">
-    <h2 class="text-center mb-4 display-6">Available Polls</h2>
+    <h2 class="text-center mb-4 display-6 animate-title">Available Polls</h2>
     <div class="row justify-content-center">
         <div class="col-md-10">
             <div class="list-group shadow-sm">
                 {% for poll in polls %}
-                <a href="{% url 'vote' poll.id %}" class="list-group-item list-group-item-action mb-3 py-4 poll-item rounded" style="transition: transform 0.2s ease-in-out;">
+                <a href="{% url 'vote' poll.id %}" class="list-group-item list-group-item-action mb-3 py-4 poll-item rounded animate-poll-item">
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
                             <h5 class="mb-1">{{ poll.title }}</h5>
                             <p class="mb-0 text-muted">{{ poll.question }}</p>
                         </div>
-                        <div class="badge bg-primary rounded-pill">Vote Now</div>
+                        <div class="badge bg-primary rounded-pill animate-badge">Vote Now</div>
                     </div>
                 </a>
                 {% empty %}
@@ -32,21 +30,57 @@
     h2 {
         font-weight: 700;
         color: #333;
+        opacity: 0;
+        animation: fadeInTitle 1s ease-out forwards;
     }
 
     .poll-item {
-        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-        border: 1px solid #e0e0e0;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        background: linear-gradient(135deg, #e0e0e0 0%, #f5f7fa 100%);
+        border: 1px solid #ddd;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        transition: transform 0.4s ease, box-shadow 0.4s ease;
+        position: relative;
+        overflow: hidden;
+        padding: 15px;
+        border-radius: 8px;
+        margin: 10px 0;
+        background-color: #ffffff;
+        backdrop-filter: blur(10px);
+    }
+
+    .poll-item::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 300%;
+        height: 100%;
+        background: rgba(255, 255, 255, 0.3);
+        transition: left 0.6s;
+        transform: skewX(-30deg);
+    }
+
+    .poll-item:hover::after {
+        left: 100%;
     }
 
     .poll-item:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        transform: translateY(-12px);
+        box-shadow: 0 16px 32px rgba(0, 0, 0, 0.2);
     }
 
     .badge {
         font-size: 0.875rem;
+        transition: background-color 0.4s ease, transform 0.4s ease;
+        transform: translateY(60%);
+        opacity: 0;
+        animation: fadeInBadge 0.8s ease-out forwards;
+        animation-delay: 0.4s;
+    }
+
+    .poll-item:hover .badge {
+        background-color: #007bff;
+        transform: scale(1.1);
     }
 
     @media (max-width: 576px) {
@@ -58,5 +92,38 @@
             font-size: 1.75rem;
         }
     }
+
+    @keyframes fadeInTitle {
+        from {
+            opacity: 0;
+            transform: translateY(-20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes fadeInBadge {
+        from {
+            opacity: 0;
+            transform: scale(0.5);
+        }
+        to {
+            opacity: 1;
+            transform: scale(1);
+        }
+    }
 </style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const pollItems = document.querySelectorAll('.poll-item');
+        pollItems.forEach((item, index) => {
+            setTimeout(() => {
+                item.classList.add('animate-poll-item');
+            }, index * 100);
+        });
+    });
+</script>
 {% endblock %}

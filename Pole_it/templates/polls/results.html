@@ -4,24 +4,24 @@
 
 {% block content %}
 <div class="container mt-5">
-    <h2 class="text-center mb-4">{{ poll.title }} Results</h2>
+    <h2 class="text-center mb-4 animate-title">{{ poll.title }} Results</h2>
     
     <!-- Poll Question Card -->
-    <div class="card shadow-lg rounded-lg">
-        <div class="card-header bg-primary text-white rounded-top">
+    <div class="card shadow-lg rounded-lg animate-card">
+        <div class="card-header bg-primary text-white rounded-top animate-card-header">
             <h4 class="mb-0">{{ poll.question }}</h4>
         </div>
         <div class="card-body">
             {% if poll.image %}
-                <div class="text-center mb-4" style="max-width: 400px; margin: auto;">
+                <div class="text-center mb-4 animate-image" style="max-width: 400px; margin: auto;">
                     <img src="{{ poll.image.url }}" alt="Poll Image" class="img-fluid rounded" style="max-height: 300px; width: auto;">
                 </div>
             {% endif %}
-            <ul class="list-group list-group-flush">
+            <ul class="list-group list-group-flush animate-list">
                 {% for option, votes in option_votes.items %}
                 <li class="list-group-item d-flex justify-content-between align-items-center">
                     {{ option.option_text }}
-                    <span class="badge bg-primary rounded-pill">{{ votes }} votes</span>
+                    <span class="badge bg-primary rounded-pill animate-badge">{{ votes }} votes</span>
                 </li>
                 {% empty %}
                 <li class="list-group-item text-center">No options available.</li>
@@ -32,12 +32,12 @@
 
     <!-- Show Plot Button -->
     <div class="text-center mt-4">
-        <button id="showPlotButton" class="btn btn-success px-4 py-2 rounded-pill shadow-sm">Show Plot</button>
+        <button id="showPlotButton" class="btn btn-success px-4 py-2 rounded-pill shadow-sm animate-button">Show Plot</button>
     </div>
 
     <!-- Plot Type Dropdown -->
     <div class="text-center mt-2">
-        <select id="plotType" class="form-select w-auto mx-auto rounded-pill shadow-sm">
+        <select id="plotType" class="form-select w-auto mx-auto rounded-pill shadow-sm animate-dropdown">
             <option value="bar">Bar</option>
             <option value="pie">Pie</option>
             <option value="doughnut">Doughnut</option>
@@ -45,7 +45,7 @@
     </div>
 
     <!-- Plotting Card (Initially Hidden) -->
-    <div id="plottingCard" class="card mt-3 shadow-lg rounded-lg" style="display: none; width: 90%; max-width: 700px; margin: auto;">
+    <div id="plottingCard" class="card mt-3 shadow-lg rounded-lg animate-plot-card" style="display: none; width: 90%; max-width: 700px; margin: auto;">
         <div class="card-header bg-secondary text-white rounded-top">
             <h4 class="text-center mb-0">Poll Results Chart</h4>
         </div>
@@ -65,6 +65,7 @@
         if (plottingCard.style.display === "none") {
             plottingCard.style.display = "block";
             this.textContent = "Hide Plot"; // Change button text to "Hide Plot"
+            plottingCard.classList.add('animate-plot-card-show'); // Add animation class
         } else {
             plottingCard.style.display = "none";
             this.textContent = "Show Plot"; // Change button text back to "Show Plot"
@@ -100,6 +101,10 @@
         options: {
             responsive: true,
             maintainAspectRatio: false,
+            animation: {
+                duration: 1000,
+                easing: 'easeInOutQuart',
+            },
         }
     });
 
@@ -134,8 +139,92 @@
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
+                animation: {
+                    duration: 1000,
+                    easing: 'easeInOutQuart',
+                },
             }
         });
     });
 </script>
+
+<style>
+    .animate-title {
+        opacity: 0;
+        animation: fadeInUp 1s ease-in-out forwards;
+    }
+
+    .animate-card {
+        opacity: 0;
+        transform: scale(0.95);
+        animation: fadeInUp 1s ease-in-out forwards 0.2s;
+    }
+
+    .animate-card-header {
+        opacity: 0;
+        animation: fadeInRight 1s ease-in-out forwards 0.4s;
+    }
+
+    .animate-image {
+        opacity: 0;
+        transform: translateY(20px);
+        animation: fadeInUp 1s ease-in-out forwards 0.6s;
+    }
+
+    .animate-list {
+        opacity: 0;
+        animation: fadeInUp 1s ease-in-out forwards 0.8s;
+    }
+
+    .animate-badge {
+        opacity: 0;
+        transform: scale(0.85);
+        animation: fadeInUp 1s ease-in-out forwards 1s;
+    }
+
+    .animate-button {
+        opacity: 0;
+        transform: translateY(20px);
+        animation: fadeInUp 1s ease-in-out forwards 1.2s;
+    }
+
+    .animate-dropdown {
+        opacity: 0;
+        transform: translateY(20px);
+        animation: fadeInUp 1s ease-in-out forwards 1.4s;
+    }
+
+    .animate-plot-card {
+        opacity: 0;
+        transform: scale(0.95);
+        animation: fadeInUp 1s ease-in-out forwards 1.6s;
+    }
+
+    .animate-plot-card-show {
+        animation: fadeInUp 1s ease-in-out forwards;
+    }
+
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes fadeInRight {
+        from {
+            opacity: 0;
+            transform: translateX(-20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+</style>
+
 {% endblock %}

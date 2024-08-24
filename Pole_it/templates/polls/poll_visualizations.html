@@ -4,10 +4,10 @@
 
 {% block content %}
 <div class="container mt-5">
-    <h2 class="text-center mb-4" style="font-family: 'Nunito', sans-serif; font-weight: bold; color: #333;">Poll Results</h2>
+    <h2 class="text-center mb-4">Poll Results</h2>
     {% for poll in poll_data %}
-    <div class="card mb-4 shadow-lg rounded-lg" style="max-height: 500px; overflow-y: auto;">
-        <div class="card-header bg-dark text-white">
+    <div class="card mb-4 shadow-lg rounded-lg animated-card">
+        <div class="card-header">
             <h4 class="text-center mb-1">{{ poll.poll.title }}</h4>
             <p class="text-center mb-0">{{ poll.poll.question }}</p>
         </div>
@@ -16,22 +16,22 @@
                 <!-- Bar Chart -->
                 <div class="col-md-4">
                     <h5 class="text-center">Bar Chart</h5>
-                    <div style="height: 200px;">
-                        <canvas id="barChart{{ forloop.counter }}" style="height: 100%;"></canvas>
+                    <div class="chart-container">
+                        <canvas id="barChart{{ forloop.counter }}" class="chart"></canvas>
                     </div>
                 </div>
                 <!-- Pie Chart -->
                 <div class="col-md-4">
                     <h5 class="text-center">Pie Chart</h5>
-                    <div style="height: 200px;">
-                        <canvas id="pieChart{{ forloop.counter }}" style="height: 100%;"></canvas>
+                    <div class="chart-container">
+                        <canvas id="pieChart{{ forloop.counter }}" class="chart"></canvas>
                     </div>
                 </div>
                 <!-- Doughnut Chart -->
                 <div class="col-md-4">
                     <h5 class="text-center">Doughnut Chart</h5>
-                    <div style="height: 200px;">
-                        <canvas id="doughnutChart{{ forloop.counter }}" style="height: 100%;"></canvas>
+                    <div class="chart-container">
+                        <canvas id="doughnutChart{{ forloop.counter }}" class="chart"></canvas>
                     </div>
                 </div>
             </div>
@@ -42,6 +42,78 @@
 
 <!-- Include Chart.js -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<!-- Include Animation and Styling -->
+<style>
+    body {
+        font-family: 'Nunito', sans-serif;
+        background-color: #f0f4f8;
+        color: #333;
+    }
+
+    .container {
+        max-width: 1200px;
+    }
+
+    h2 {
+        font-weight: bold;
+        color: #333;
+    }
+
+    .card {
+        background-color: #fff;
+        border-radius: 12px;
+        overflow: hidden;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .card:hover {
+        transform: scale(1.02);
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    }
+
+    .card-header {
+        background-color: #222;
+        color: #fff;
+        padding: 15px;
+        border-bottom: 1px solid #444;
+    }
+
+    .chart-container {
+        position: relative;
+        height: 200px;
+        background-color: #f8f9fa;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        transition: background-color 0.3s ease;
+    }
+
+    .chart-container:hover {
+        background-color: #e9ecef;
+    }
+
+    .chart {
+        display: block;
+        width: 100% !important;
+        height: 100% !important;
+    }
+
+    .animated-card {
+        animation: fadeInUp 0.6s ease-in-out;
+    }
+
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+</style>
 
 <script>
     {% for poll in poll_data %}
@@ -55,18 +127,18 @@
                 label: 'Votes',
                 data: {{ poll.data|safe }},
                 backgroundColor: [
-                    'rgba(54, 162, 235, 0.6)',  // Blue
-                    'rgba(153, 102, 255, 0.6)', // Purple
-                    'rgba(255, 159, 64, 0.6)',  // Orange
-                    'rgba(255, 205, 86, 0.6)',  // Yellow
-                    'rgba(201, 203, 207, 0.6)', // Grey
+                    'rgba(54, 162, 235, 0.6)',
+                    'rgba(153, 102, 255, 0.6)',
+                    'rgba(255, 159, 64, 0.6)',
+                    'rgba(255, 205, 86, 0.6)',
+                    'rgba(201, 203, 207, 0.6)',
                 ],
                 borderColor: [
-                    'rgba(54, 162, 235, 1)',    // Blue
-                    'rgba(153, 102, 255, 1)',   // Purple
-                    'rgba(255, 159, 64, 1)',    // Orange
-                    'rgba(255, 205, 86, 1)',    // Yellow
-                    'rgba(201, 203, 207, 1)',   // Grey
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(153, 102, 255, 1)',
+                    'rgba(255, 159, 64, 1)',
+                    'rgba(255, 205, 86, 1)',
+                    'rgba(201, 203, 207, 1)',
                 ],
                 borderWidth: 1
             }]
@@ -78,18 +150,18 @@
                 y: {
                     beginAtZero: true,
                     grid: {
-                        color: 'rgba(0, 0, 0, 0.1)' // Light grid lines
+                        color: 'rgba(0, 0, 0, 0.1)'
                     },
                     ticks: {
-                        color: '#333' // Dark text color for light themes
+                        color: '#333'
                     }
                 },
                 x: {
                     grid: {
-                        color: 'rgba(0, 0, 0, 0.1)' // Light grid lines
+                        color: 'rgba(0, 0, 0, 0.1)'
                     },
                     ticks: {
-                        color: '#333' // Dark text color for light themes
+                        color: '#333'
                     }
                 }
             },
@@ -97,13 +169,13 @@
                 legend: {
                     display: true,
                     labels: {
-                        color: '#333' // Dark legend color
+                        color: '#333'
                     }
                 },
                 tooltip: {
-                    backgroundColor: 'rgba(0, 0, 0, 0.7)', // Dark background for tooltips
-                    bodyColor: '#fff', // White text color for tooltips
-                    titleColor: '#fff' // White title color for tooltips
+                    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+                    bodyColor: '#fff',
+                    titleColor: '#fff'
                 }
             }
         }
@@ -119,18 +191,18 @@
                 label: 'Votes',
                 data: {{ poll.data|safe }},
                 backgroundColor: [
-                    'rgba(54, 162, 235, 0.6)',  // Blue
-                    'rgba(153, 102, 255, 0.6)', // Purple
-                    'rgba(255, 159, 64, 0.6)',  // Orange
-                    'rgba(255, 205, 86, 0.6)',  // Yellow
-                    'rgba(201, 203, 207, 0.6)', // Grey
+                    'rgba(54, 162, 235, 0.6)',
+                    'rgba(153, 102, 255, 0.6)',
+                    'rgba(255, 159, 64, 0.6)',
+                    'rgba(255, 205, 86, 0.6)',
+                    'rgba(201, 203, 207, 0.6)',
                 ],
                 borderColor: [
-                    'rgba(54, 162, 235, 1)',    // Blue
-                    'rgba(153, 102, 255, 1)',   // Purple
-                    'rgba(255, 159, 64, 1)',    // Orange
-                    'rgba(255, 205, 86, 1)',    // Yellow
-                    'rgba(201, 203, 207, 1)',   // Grey
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(153, 102, 255, 1)',
+                    'rgba(255, 159, 64, 1)',
+                    'rgba(255, 205, 86, 1)',
+                    'rgba(201, 203, 207, 1)',
                 ],
                 borderWidth: 1
             }]
@@ -142,13 +214,13 @@
                 legend: {
                     display: true,
                     labels: {
-                        color: '#333' // Dark legend color
+                        color: '#333'
                     }
                 },
                 tooltip: {
-                    backgroundColor: 'rgba(0, 0, 0, 0.7)', // Dark background for tooltips
-                    bodyColor: '#fff', // White text color for tooltips
-                    titleColor: '#fff' // White title color for tooltips
+                    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+                    bodyColor: '#fff',
+                    titleColor: '#fff'
                 }
             }
         }
@@ -164,18 +236,18 @@
                 label: 'Votes',
                 data: {{ poll.data|safe }},
                 backgroundColor: [
-                    'rgba(54, 162, 235, 0.6)',  // Blue
-                    'rgba(153, 102, 255, 0.6)', // Purple
-                    'rgba(255, 159, 64, 0.6)',  // Orange
-                    'rgba(255, 205, 86, 0.6)',  // Yellow
-                    'rgba(201, 203, 207, 0.6)', // Grey
+                    'rgba(54, 162, 235, 0.6)',
+                    'rgba(153, 102, 255, 0.6)',
+                    'rgba(255, 159, 64, 0.6)',
+                    'rgba(255, 205, 86, 0.6)',
+                    'rgba(201, 203, 207, 0.6)',
                 ],
                 borderColor: [
-                    'rgba(54, 162, 235, 1)',    // Blue
-                    'rgba(153, 102, 255, 1)',   // Purple
-                    'rgba(255, 159, 64, 1)',    // Orange
-                    'rgba(255, 205, 86, 1)',    // Yellow
-                    'rgba(201, 203, 207, 1)',   // Grey
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(153, 102, 255, 1)',
+                    'rgba(255, 159, 64, 1)',
+                    'rgba(255, 205, 86, 1)',
+                    'rgba(201, 203, 207, 1)',
                 ],
                 borderWidth: 1
             }]
@@ -187,13 +259,13 @@
                 legend: {
                     display: true,
                     labels: {
-                        color: '#333' // Dark legend color
+                        color: '#333'
                     }
                 },
                 tooltip: {
-                    backgroundColor: 'rgba(0, 0, 0, 0.7)', // Dark background for tooltips
-                    bodyColor: '#fff', // White text color for tooltips
-                    titleColor: '#fff' // White title color for tooltips
+                    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+                    bodyColor: '#fff',
+                    titleColor: '#fff'
                 }
             }
         }
