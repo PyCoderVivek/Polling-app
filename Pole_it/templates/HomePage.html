@@ -4,12 +4,12 @@
 
 {% block content %}
     <div class="text-center">
-        <h1>Welcome to MySite</h1>
+        <h1 class="welcome-title">Welcome to MySite</h1>
         <p>This is the homepage content.</p>
     </div>
 
     <!-- Profile Card -->
-    <div class="card mx-auto mt-4" style="width: 18rem;">
+    <div class="card mx-auto mt-4 profile-card">
         <img src="https://cdn-icons-png.flaticon.com/512/21/21104.png" class="card-img-top" alt="Profile Picture">
         <div class="card-body">
             <h5 class="card-title">{{ user.username }}</h5>
@@ -24,7 +24,7 @@
             {% for result in poll_results %}
                 <div class="col-md-4 mb-4">
                     <a href="{% url 'poll_results' result.poll.id %}" class="card-link">
-                        <div class="card">
+                        <div class="card poll-card">
                             <div class="card-header">
                                 <h5 class="card-title">{{ result.poll.title }}</h5>
                             </div>
@@ -97,7 +97,15 @@
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@600&display=swap');
         body {
             font-family: 'Poppins', sans-serif;
-            background-color: #f8f9fa;
+            background: linear-gradient(to bottom right, #e9ecef, #ffffff);
+            box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+
+        .welcome-title {
+            font-size: 2.5rem;
+            color: #343a40;
+            text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.2);
         }
 
         .recent-polls-heading {
@@ -114,6 +122,35 @@
         .card-link {
             text-decoration: none;
             color: inherit;
+        }
+
+        /* Profile Card */
+        .profile-card {
+            width: 14rem; /* Adjusted width */
+            border: 1px solid #dee2e6;
+            border-radius: 15px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            background: #ffffff;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .profile-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Poll Card */
+        .poll-card {
+            border: 1px solid #dee2e6;
+            border-radius: 15px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            background: #ffffff;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .poll-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
         }
 
         /* Floating Button */

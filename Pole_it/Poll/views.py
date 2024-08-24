@@ -111,3 +111,9 @@ def analytics_dashboard_view(request):
     }
 
     return render(request, 'polls/analytics_dashboard.html', context)
+
+def poll_search(request):
+    query = request.GET.get('query')
+    polls = Poll.objects.filter(title__icontains=query) | Poll.objects.filter(question__icontains=query)
+    return render(request, 'polls/poll_list.html', {'polls': polls})
+

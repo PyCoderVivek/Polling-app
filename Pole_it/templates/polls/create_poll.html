@@ -5,7 +5,7 @@
 {% block content %}
 <div class="row justify-content-center mt-5">
   <div class="col-md-8">
-    <div class="card shadow-sm border-0">
+    <div id="form-card" class="card shadow-lg border-0 animate-card">
       <div class="card-header bg-primary text-white text-center rounded-top">
         <h2 class="mb-0">Create a New Poll</h2>
       </div>
@@ -33,8 +33,18 @@
           <div class="d-flex justify-content-between mb-4">
             <button type="button" id="add-option" class="btn btn-outline-secondary"><i class="bi bi-plus-lg"></i> Add Option</button>
           </div>
-          <button type="submit" class="btn btn-primary w-100">Create Poll</button>
+          <button type="submit" class="btn btn-primary w-100 animate-submit">Create Poll</button>
         </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Right Card for Displaying the Uploaded Photo -->
+  <div id="photo-card" class="col-md-4 mt-5">
+    <div class="card shadow-lg border-0 animate-photo-card d-none">
+      <div class="card-body p-4 text-center">
+        <h5 class="card-title">Uploaded Image</h5>
+        <img id="uploaded-photo" src="#" alt="Uploaded Image" class="img-fluid rounded">
       </div>
     </div>
   </div>
@@ -42,6 +52,97 @@
 
 <!-- Icons from Bootstrap Icons CDN -->
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+
+<!-- Custom CSS for animations and aesthetics -->
+<style>
+  .animate-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .animate-card:hover {
+    transform: scale(1.02);
+    box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.15);
+  }
+
+  .animate-submit {
+    transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .animate-submit:hover {
+    background-color: #004085;
+    transform: translateY(-3px);
+    box-shadow: 0px 5px 15px rgba(0, 64, 133, 0.4);
+  }
+
+  .btn-outline-secondary {
+    border-color: #6c757d;
+    color: #6c757d;
+  }
+
+  .btn-outline-secondary:hover {
+    background-color: #6c757d;
+    color: #fff;
+  }
+
+  .form-control {
+    transition: box-shadow 0.3s ease, border-color 0.3s ease;
+  }
+
+  .form-control:focus {
+    box-shadow: 0px 0px 10px rgba(0, 123, 255, 0.5);
+    border-color: #007bff;
+  }
+
+  .option-item .form-control {
+    background-color: #f8f9fa;
+    border: 1px solid #ced4da;
+  }
+
+  .option-item .form-control:focus {
+    background-color: #fff;
+  }
+
+  .card-header {
+    background: linear-gradient(135deg, #007bff, #6610f2);
+  }
+
+  .card {
+    border-radius: 15px;
+  }
+
+  /* Center the card initially */
+  .row {
+    display: flex;
+    justify-content: center;
+    transition: justify-content 0.5s ease;
+  }
+
+  /* Move the card slightly to the right */
+  .row.shift-right {
+    justify-content: start;
+    padding-left: 50px;
+  }
+
+  /* Photo card animation */
+  .animate-photo-card {
+    transition: opacity 0.5s ease, transform 0.5s ease;
+  }
+
+  .photo-card-visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .photo-card-hidden {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+
+  #uploaded-photo {
+    max-height: 200px;
+    object-fit: cover;
+  }
+</style>
 
 <script>
   document.getElementById('add-option').addEventListener('click', function() {
@@ -59,6 +160,34 @@
   document.getElementById('options-container').addEventListener('click', function(e) {
     if (e.target.classList.contains('remove-option') || e.target.closest('.remove-option')) {
       e.target.closest('.option-item').remove();
+    }
+  });
+
+  // Move the form card to the right and display the photo card after an image is uploaded
+  document.getElementById('poll-image').addEventListener('change', function(e) {
+    const row = document.querySelector('.row');
+    const photoCard = document.getElementById('photo-card');
+    const uploadedPhoto = document.getElementById('uploaded-photo');
+
+    if (e.target.files.length > 0) {
+      const reader = new FileReader();
+      reader.onload = function(event) {
+        uploadedPhoto.src = event.target.result;
+        photoCard.querySelector('.card').classList.remove('d-none');
+        setTimeout(function() {
+          photoCard.querySelector('.card').classList.add('photo-card-visible');
+          photoCard.querySelector('.card').classList.remove('photo-card-hidden');
+        }, 10);
+      };
+      reader.readAsDataURL(e.target.files[0]);
+      
+      row.classList.add('shift-right');
+    } else {
+      photoCard.querySelector('.card').classList.add('photo-card-hidden');
+      setTimeout(function() {
+        photoCard.querySelector('.card').classList.add('d-none');
+        photoCard.querySelector('.card').classList.remove('photo-card-visible');
+      }, 500);
     }
   });
 </script>
