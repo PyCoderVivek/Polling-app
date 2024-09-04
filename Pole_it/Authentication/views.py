@@ -4,7 +4,6 @@ from django.shortcuts import render, redirect , get_object_or_404
 from django.contrib.auth import authenticate, login
 from django.contrib import messages
 from django.contrib.auth.models import User
-from django.core.files.storage import default_storage
 from django.contrib.auth.decorators import login_required
 from Poll.models import Poll
 from .forms import UserProfileForm
