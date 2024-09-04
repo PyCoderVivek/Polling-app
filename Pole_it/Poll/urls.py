@@ -1,7 +1,7 @@
 # Poll/urls.py
 
 from django.urls import path
-from .views import create_poll_view, vote_view, poll_list_view, poll_results_view, poll_visualizations_view,analytics_dashboard_view,poll_search
+from .views import *
 from django.conf import settings
 from django.conf.urls.static import static
 

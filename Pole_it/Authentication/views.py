@@ -6,36 +6,8 @@ from django.contrib import messages
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from Poll.models import Poll
-from .forms import UserProfileForm
 from .models import UserProfile
 from .forms import CustomLoginForm
-
-
-@login_required
-def view_profile(request):
-    try:
-        profile = UserProfile.objects.get(user=request.user)
-    except UserProfile.DoesNotExist:
-        messages.error(request, "Profile does not exist.")
-        return redirect('edit_profile')  # Redirect to profile creation/edit page
-
-    return render(request, 'auth/view_profile.html', {'profile': profile})
-
-@login_required
-def edit_profile(request):
-    profile = get_object_or_404(UserProfile, user=request.user)
-
-    if request.method == 'POST':
-        form = UserProfileForm(request.POST, request.FILES, instance=profile)
-        if form.is_valid():
-            form.save()
-            messages.success(request, 'Profile updated successfully!')
-            return redirect('view_profile')
-    else:
-        form = UserProfileForm(instance=profile)
-
-    return render(request, 'auth/edit_profile.html', {'form': form})
-
 
 @login_required
 def home_view(request):

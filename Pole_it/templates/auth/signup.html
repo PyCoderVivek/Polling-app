@@ -11,13 +11,14 @@
   <style>
     /* Background animation with floating images */
     body {
-      background: linear-gradient(45deg, #1e3c72, #2a5298);
+      background: linear-gradient(45deg, #00d2ff, #3a7bd5);
       height: 100vh;
       display: flex;
       justify-content: center;
       align-items: center;
       overflow: hidden;
       position: relative;
+      color: #ffffff; /* Update text color to be visible on dark background */
     }
 
     .floating-images {
@@ -51,30 +52,47 @@
       position: relative;
       z-index: 1;
       box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.5);
-      background-color: #191870;
+      background-color: #252850;
       color: white;
+      border: none;
     }
 
     .card-header h2 {
+      color: #00d2ff;
+    }
+
+    .form-label {
       color: #ffffff;
     }
 
+    .form-control {
+      background-color: #3a7bd5;
+      border: 1px solid #00d2ff;
+      color: #ffffff;
+    }
+
+    .form-control:focus {
+      background-color: #3a7bd5;
+      border-color: #00d2ff;
+      box-shadow: 0 0 0 0.2rem rgba(0, 210, 255, 0.25);
+    }
+
     .btn-primary {
-      background-color: #007bff;
-      border-color: #007bff;
+      background-color: #00d2ff;
+      border-color: #00d2ff;
     }
 
     .btn-primary:hover {
-      background-color: #0056b3;
-      border-color: #004085;
+      background-color: #00a3cc;
+      border-color: #007b99;
     }
 
     a {
-      color: #007bff;
+      color: #00d2ff;
     }
 
     a:hover {
-      color: #0056b3;
+      color: #00a3cc;
     }
 
   </style>
@@ -84,7 +102,6 @@
     <img src="https://static.vecteezy.com/system/resources/previews/009/583/364/original/3d-illustration-customer-survey-for-digital-marketing-png.png" alt="Floating Image 1">
     <img src="https://cdn3d.iconscout.com/3d/premium/thumb/survey-6610261-5498887.png?f=webp" alt="Floating Image 2">
     <img src="https://cdn3d.iconscout.com/3d/premium/thumb/voters-3d-icon-download-in-png-blend-fbx-gltf-file-formats--like-logo-vote-voting-election-voter-democratic-elections-pack-politics-icons-7946416.png" alt="Floating Image 3">
-   
   </div>
   
   <div class="container">
