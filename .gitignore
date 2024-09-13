@@ -10,7 +10,7 @@ __pycache__/
 
 # Django specific files
 db.sqlite3
-/media/
+/media/poll_images
 
 # Log files
 *.log
@@ -18,3 +18,5 @@ db.sqlite3
 # OS-generated files
 .DS_Store
 Thumbs.db
+
+.vscode
