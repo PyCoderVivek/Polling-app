@@ -39,29 +39,10 @@
         border: 1px solid #ddd;
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         transition: transform 0.4s ease, box-shadow 0.4s ease;
-        position: relative;
-        overflow: hidden;
         padding: 15px;
         border-radius: 8px;
         margin: 10px 0;
         background-color: #ffffff;
-        backdrop-filter: blur(10px);
-    }
-
-    .poll-item::after {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: -100%;
-        width: 300%;
-        height: 100%;
-        background: rgba(255, 255, 255, 0.3);
-        transition: left 0.6s;
-        transform: skewX(-30deg);
-    }
-
-    .poll-item:hover::after {
-        left: 100%;
     }
 
     .poll-item:hover {
@@ -76,21 +57,6 @@
         opacity: 0;
         animation: fadeInBadge 0.8s ease-out forwards;
         animation-delay: 0.4s;
-    }
-
-    .poll-item:hover .badge {
-        background-color: #007bff;
-        transform: scale(1.1);
-    }
-
-    @media (max-width: 576px) {
-        .badge {
-            font-size: 0.75rem;
-        }
-
-        h2 {
-            font-size: 1.75rem;
-        }
     }
 
     @keyframes fadeInTitle {
@@ -115,20 +81,4 @@
         }
     }
 </style>
-
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const pollItems = document.querySelectorAll('.poll-item');
-        pollItems.forEach((item, index) => {
-            setTimeout(() => {
-                item.classList.add('animate-poll-item');
-            }, index * 100);
-        });
-    });
-</script>
-<!-- Floating Plus Button -->
-    <a href="{% url 'create_poll' %}" class="btn btn-floating" id="floating-btn">
-        +
-        <i class="bi bi-plus"></i>
-    </a>
 {% endblock %}

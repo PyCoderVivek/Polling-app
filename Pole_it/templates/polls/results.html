@@ -6,7 +6,6 @@
 <div class="container mt-5">
     <h2 class="text-center mb-4 animate-title">{{ poll.title }} Results</h2>
     
-    <!-- Poll Question Card -->
     <div class="card shadow-lg rounded-lg animate-card">
         <div class="card-header bg-primary text-white rounded-top animate-card-header">
             <h4 class="mb-0">{{ poll.question }}</h4>
@@ -17,6 +16,10 @@
                     <img src="{{ poll.image.url }}" alt="Poll Image" class="img-fluid rounded" style="max-height: 300px; width: auto;">
                 </div>
             {% endif %}
+            <div class="mb-4">
+                <p><strong>Creator:</strong> {{ poll.creator.username }}</p>
+                <p><strong>Total Votes:</strong> {{ total_votes }}</p>
+            </div>
             <ul class="list-group list-group-flush animate-list">
                 {% for option, votes in option_votes.items %}
                 <li class="list-group-item d-flex justify-content-between align-items-center">
@@ -30,12 +33,10 @@
         </div>
     </div>
 
-    <!-- Show Plot Button -->
     <div class="text-center mt-4">
         <button id="showPlotButton" class="btn btn-success px-4 py-2 rounded-pill shadow-sm animate-button">Show Plot</button>
     </div>
 
-    <!-- Plot Type Dropdown -->
     <div class="text-center mt-2">
         <select id="plotType" class="form-select w-auto mx-auto rounded-pill shadow-sm animate-dropdown">
             <option value="bar">Bar</option>
@@ -44,8 +45,7 @@
         </select>
     </div>
 
-    <!-- Plotting Card (Initially Hidden) -->
-    <div id="plottingCard" class="card mt-3 shadow-lg rounded-lg animate-plot-card" style="display: none; width: 90%; max-width: 700px; margin: auto;">
+    <div id="plottingCard" class="card mt-3 shadow-lg rounded-lg animate-plot-card" style="display: none;">
         <div class="card-header bg-secondary text-white rounded-top">
             <h4 class="text-center mb-0">Poll Results Chart</h4>
         </div>
@@ -55,45 +55,41 @@
     </div>
 </div>
 
-<!-- Include Chart.js -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-<!-- Script to Handle Show/Hide Plotting Card and Change Plot Type -->
 <script>
     document.getElementById('showPlotButton').addEventListener('click', function() {
         const plottingCard = document.getElementById('plottingCard');
         if (plottingCard.style.display === "none") {
             plottingCard.style.display = "block";
-            this.textContent = "Hide Plot"; // Change button text to "Hide Plot"
-            plottingCard.classList.add('animate-plot-card-show'); // Add animation class
+            this.textContent = "Hide Plot";
         } else {
             plottingCard.style.display = "none";
-            this.textContent = "Show Plot"; // Change button text back to "Show Plot"
+            this.textContent = "Show Plot";
         }
     });
 
-    // Initial Chart.js Plot
     const ctx = document.getElementById('resultsChart').getContext('2d');
     let resultsChart = new Chart(ctx, {
-        type: 'bar',  // Initial type
+        type: 'bar',
         data: {
             labels: {{ labels|safe }},
             datasets: [{
                 label: 'Votes',
                 data: {{ data|safe }},
                 backgroundColor: [
-                    'rgba(54, 162, 235, 0.6)',  // Blue
-                    'rgba(153, 102, 255, 0.6)', // Purple
-                    'rgba(255, 159, 64, 0.6)',  // Orange
-                    'rgba(255, 205, 86, 0.6)',  // Yellow
-                    'rgba(201, 203, 207, 0.6)'  // Grey
+                    'rgba(54, 162, 235, 0.6)',
+                    'rgba(153, 102, 255, 0.6)',
+                    'rgba(255, 159, 64, 0.6)',
+                    'rgba(255, 205, 86, 0.6)',
+                    'rgba(201, 203, 207, 0.6)'
                 ],
                 borderColor: [
-                    'rgba(54, 162, 235, 1)',    // Blue
-                    'rgba(153, 102, 255, 1)',   // Purple
-                    'rgba(255, 159, 64, 1)',    // Orange
-                    'rgba(255, 205, 86, 1)',    // Yellow
-                    'rgba(201, 203, 207, 1)'    // Grey
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(153, 102, 255, 1)',
+                    'rgba(255, 159, 64, 1)',
+                    'rgba(255, 205, 86, 1)',
+                    'rgba(201, 203, 207, 1)'
                 ],
                 borderWidth: 1
             }]
@@ -101,17 +97,12 @@
         options: {
             responsive: true,
             maintainAspectRatio: false,
-            animation: {
-                duration: 1000,
-                easing: 'easeInOutQuart',
-            },
         }
     });
 
-    // Update Chart Type Based on Dropdown Selection
     document.getElementById('plotType').addEventListener('change', function() {
         const selectedType = this.value;
-        resultsChart.destroy();  // Destroy current chart instance
+        resultsChart.destroy();
         resultsChart = new Chart(ctx, {
             type: selectedType,
             data: {
@@ -120,18 +111,18 @@
                     label: 'Votes',
                     data: {{ data|safe }},
                     backgroundColor: [
-                        'rgba(54, 162, 235, 0.6)',  // Blue
-                        'rgba(153, 102, 255, 0.6)', // Purple
-                        'rgba(255, 159, 64, 0.6)',  // Orange
-                        'rgba(255, 205, 86, 0.6)',  // Yellow
-                        'rgba(201, 203, 207, 0.6)'  // Grey
+                        'rgba(54, 162, 235, 0.6)',
+                        'rgba(153, 102, 255, 0.6)',
+                        'rgba(255, 159, 64, 0.6)',
+                        'rgba(255, 205, 86, 0.6)',
+                        'rgba(201, 203, 207, 0.6)'
                     ],
                     borderColor: [
-                        'rgba(54, 162, 235, 1)',    // Blue
-                        'rgba(153, 102, 255, 1)',   // Purple
-                        'rgba(255, 159, 64, 1)',    // Orange
-                        'rgba(255, 205, 86, 1)',    // Yellow
-                        'rgba(201, 203, 207, 1)'    // Grey
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(153, 102, 255, 1)',
+                        'rgba(255, 159, 64, 1)',
+                        'rgba(255, 205, 86, 1)',
+                        'rgba(201, 203, 207, 1)'
                     ],
                     borderWidth: 1
                 }]
@@ -139,98 +130,8 @@
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
-                animation: {
-                    duration: 1000,
-                    easing: 'easeInOutQuart',
-                },
             }
         });
     });
 </script>
-
-<style>
-    .animate-title {
-        opacity: 0;
-        animation: fadeInUp 1s ease-in-out forwards;
-    }
-
-    .animate-card {
-        opacity: 0;
-        transform: scale(0.95);
-        animation: fadeInUp 1s ease-in-out forwards 0.2s;
-    }
-
-    .animate-card-header {
-        opacity: 0;
-        animation: fadeInRight 1s ease-in-out forwards 0.4s;
-    }
-
-    .animate-image {
-        opacity: 0;
-        transform: translateY(20px);
-        animation: fadeInUp 1s ease-in-out forwards 0.6s;
-    }
-
-    .animate-list {
-        opacity: 0;
-        animation: fadeInUp 1s ease-in-out forwards 0.8s;
-    }
-
-    .animate-badge {
-        opacity: 0;
-        transform: scale(0.85);
-        animation: fadeInUp 1s ease-in-out forwards 1s;
-    }
-
-    .animate-button {
-        opacity: 0;
-        transform: translateY(20px);
-        animation: fadeInUp 1s ease-in-out forwards 1.2s;
-    }
-
-    .animate-dropdown {
-        opacity: 0;
-        transform: translateY(20px);
-        animation: fadeInUp 1s ease-in-out forwards 1.4s;
-    }
-
-    .animate-plot-card {
-        opacity: 0;
-        transform: scale(0.95);
-        animation: fadeInUp 1s ease-in-out forwards 1.6s;
-    }
-
-    .animate-plot-card-show {
-        animation: fadeInUp 1s ease-in-out forwards;
-    }
-
-    @keyframes fadeInUp {
-        from {
-            opacity: 0;
-            transform: translateY(20px);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-
-    @keyframes fadeInRight {
-        from {
-            opacity: 0;
-            transform: translateX(-20px);
-        }
-        to {
-            opacity: 1;
-            transform: translateX(0);
-        }
-    }
-</style>
-
-<!-- Floating Plus Button -->
-<a href="{% url 'create_poll' %}" class="btn btn-floating" id="floating-btn">
-    +
-    <i class="bi bi-plus"></i>
-</a>
-
 {% endblock %}

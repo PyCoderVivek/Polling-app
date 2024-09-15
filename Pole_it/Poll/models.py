@@ -1,18 +1,17 @@
-#Poll/forms.py
-
 from django.db import models
 from django.contrib.auth.models import User
-
-
 
 class Poll(models.Model):
     title = models.CharField(max_length=200)
     question = models.TextField()
-    image = models.ImageField(upload_to='poll_images/', null=True, blank=True)  # New image field
-
+    image = models.ImageField(upload_to='poll_images/', null=True, blank=True)
+    creator = models.ForeignKey(User, on_delete=models.CASCADE, related_name='created_polls')  # Link to user
 
     def __str__(self):
         return self.title
+
+    def total_votes(self):
+        return Vote.objects.filter(poll=self).count()
 
 class PollOption(models.Model):
     poll = models.ForeignKey(Poll, related_name='options', on_delete=models.CASCADE)
@@ -27,7 +26,7 @@ class Vote(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
 
     class Meta:
-        unique_together = ('poll', 'user')  # Ensures a user can only vote once per poll
+        unique_together = ('poll', 'user')
 
     def __str__(self):
         return f'{self.user} voted for {self.option} in {self.poll}'
