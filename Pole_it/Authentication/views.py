@@ -1,6 +1,6 @@
-# Athenticate/views.py
+# Authentication/views.py
 
-from django.shortcuts import render, redirect , get_object_or_404
+from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login
 from django.contrib import messages
 from django.contrib.auth.models import User
@@ -8,6 +8,8 @@ from django.contrib.auth.decorators import login_required
 from Poll.models import Poll
 from .models import UserProfile
 from .forms import CustomLoginForm
+from .forms import UserProfileForm
+from .models import UserProfile
 
 def landing_page(request):
     return render(request, 'auth/landingPage.html')
@@ -47,14 +49,19 @@ def login_view(request):
             user = authenticate(request, username=username, password=password)
             
             if user is not None and user.is_active:
+                # Automatically create UserProfile if it doesn't exist
+                if not UserProfile.objects.filter(user=user).exists():
+                    UserProfile.objects.create(user=user)
+
+                # Admin-specific login
                 if is_admin and user.is_superuser:
                     login(request, user)
-                    return redirect('analytics_dashboard')  # Redirect to the admin dashboard
+                    return redirect('analytics_dashboard')  # Redirect to admin dashboard
                 elif not is_admin:
                     login(request, user)
                     return redirect('home')  # Redirect to the home page or user dashboard
         else:
-            messages.error(request, "UserName or Password is Invalid !")  # Handle invalid form submission
+            messages.error(request, "Username or Password is invalid!")  # Handle invalid form submission
     else:
         form = CustomLoginForm()
 
@@ -73,7 +80,7 @@ def signup_view(request):
 
         if password == password_confirm:
             user = User.objects.create_user(username=username, email=email, password=password)
-            UserProfile.objects.create(user=user)  # Create UserProfile instance
+            UserProfile.objects.create(user=user)  # Create UserProfile instance during signup
             login(request, user)
             return redirect('login')
         else:
@@ -81,3 +88,26 @@ def signup_view(request):
             return render(request, 'auth/signup.html')
 
     return render(request, 'auth/signup.html')
+
+@login_required
+def view_profile(request):
+    """ View profile details """
+    user_profile = UserProfile.objects.get(user=request.user)
+    context = {'user_profile': user_profile}
+    return render(request, 'auth/view_profile.html', context)
+
+@login_required
+def edit_profile(request):
+    """ Update profile details """
+    user_profile = UserProfile.objects.get(user=request.user)
+    
+    if request.method == 'POST':
+        form = UserProfileForm(request.POST, request.FILES, instance=user_profile)
+        if form.is_valid():
+            form.save()
+            return redirect('view_profile')
+    else:
+        form = UserProfileForm(instance=user_profile)
+    
+    context = {'form': form}
+    return render(request, 'auth/edit_profile.html', context)

@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block title %}Profile{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card">
+                <!-- Check if the user has uploaded a profile picture -->
+                {% if user_profile.profile_picture and user_profile.profile_picture.url %}
+                    <img src="{{ user_profile.profile_picture.url }}" class="card-img-top" alt="Profile Picture">
+                {% else %}
+                    <!-- Default profile picture if none exists -->
+                    <img src="https://static.vecteezy.com/system/resources/thumbnails/020/765/399/small/default-profile-account-unknown-icon-black-silhouette-free-vector.jpg" class="card-img-top" alt="Default Profile Picture">
+                {% endif %}
+                <div class="card-body">
+                    <h5 class="card-title">{{ user.username }}</h5>
+                    <p class="card-text">{{ user_profile.bio }}</p>
+                    <p class="card-text">Location: {{ user_profile.location }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

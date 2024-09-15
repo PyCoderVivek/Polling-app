@@ -21,7 +21,7 @@
             font-family: 'Poppins', sans-serif;
             background: linear-gradient(135deg, #00BFFF, #800080); /* Aqua to Purple Gradient */
             color: #fff; /* Change text color to white for better contrast */
-            padding-top: 56px; /* Adjusted for fixed navbar */
+            padding-top: 80px; /* Adjusted for fixed navbar */
             transition: background-color 0.3s ease, color 0.3s ease;
         }
 
@@ -46,7 +46,7 @@
         }
 
         .navbar-toggler {
-            border: none;
+            border: dashed;
         }
 
         /* Card Styles */
@@ -110,7 +110,7 @@
         .btn-floating {
             position: fixed;
             bottom: 40px;
-            left: 50%;
+            left: 95%;
             transform: translateX(-50%);
             background-color: #007bff;
             color: white;
@@ -166,63 +166,80 @@
                 margin-right: 0;
                 margin-top: 10px;
             }
-        }
+        } 
     </style>
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-light fixed-top">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="{% url 'home' %}">Polling App</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'poll_list' %}">View Polls</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'poll_visualizations' %}">Real-Time Results</a>
-                    </li>
-                </ul>
-                <div class="search-bar">
-                    <form class="d-flex" action="{% url 'poll_search' %}" method="GET">
-                        <input class="form-control me-2" type="search" name="query" placeholder="Search Polls" aria-label="Search">
-                        <button class="btn btn-outline-success" type="submit">Search</button>
-                    </form>
-                </div>
+<nav class="navbar navbar-expand-lg navbar-light fixed-top">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="{% url 'home' %}">Polling App</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'poll_list' %}">View Polls</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'poll_visualizations' %}">Real-Time Results</a>
+                </li>
+            </ul>
+            <div class="search-bar">
+                <form class="d-flex" action="{% url 'poll_search' %}" method="GET">
+                    <input class="form-control me-2" type="search" name="query" placeholder="Search Polls" aria-label="Search">
+                    <button class="btn btn-outline-success" type="submit">Search</button>
+                </form>
             </div>
         </div>
         <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-            <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" id="authDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                    <img src="https://i.pngimg.me/thumb/f/720/m2H7H7G6G6K9Z5i8.jpg" alt="User" height="30" style="border-radius: 50%;">
-                </a>
-                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="authDropdown">
-                    <li><a class="dropdown-item" href="{% url 'login' %}">Logout</a></li>
-                </ul>
-            </li>
+            {% if user.is_authenticated %}
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="profileDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <!-- Dynamically show profile picture if uploaded -->
+                        {% if user.userprofile.profile_picture %}
+                            <img src="{{ user.userprofile.profile_picture.url }}" alt="Profile" height="30" style="border-radius: 50%;">
+                        {% else %}
+                            <img src="{% static 'images/default_profile.png' %}" alt="Profile" height="30" style="border-radius: 50%;">
+                        {% endif %}
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
+                        <li><a class="dropdown-item" href="{% url 'view_profile' %}">Profile</a></li>
+                        <li><a class="dropdown-item" href="{% url 'edit_profile' %}">Settings</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="{% url 'login' %}">Logout</a></li>
+                    </ul>
+                </li>
+            {% else %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'login' %}">Login</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'signup' %}">Signup</a>
+                </li>
+            {% endif %}
         </ul>
-    </nav>
-
-    <div class="container mt-5">
-        {% block content %}
-        {% endblock %}
     </div>
+</nav>
 
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- Chart.js -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script>
-        // Floating Button Click Animation
-        const floatingBtn = document.querySelector('.btn-floating');
-        const createPollHidden = document.querySelector('.create-poll-hidden');
+<!-- Main Content -->
+<div class="container mt-4">
+    {% block content %}
+    <!-- Content goes here -->
+    {% endblock %}
+</div>
 
-        floatingBtn.addEventListener('click', function() {
-            this.classList.toggle('clicked');
-            createPollHidden.classList.toggle('create-poll-visible');
-        });
-    </script>
+<!-- Floating Button -->
+<a href="{% url 'create_poll' %}" class="btn-floating" id="createPollBtn">+
+    <i class="fas fa-plus"></i>
+</a>
+
+
+
+<!-- Bootstrap JS and Font Awesome -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://kit.fontawesome.com/a076d05399.js"></script>
+
 </body>
 </html>
