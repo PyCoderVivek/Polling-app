@@ -9,6 +9,9 @@ from Poll.models import Poll
 from .models import UserProfile
 from .forms import CustomLoginForm
 
+def landing_page(request):
+    return render(request, 'auth/landingPage.html')
+
 @login_required
 def home_view(request):
     user = request.user
