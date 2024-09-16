@@ -1,25 +1,27 @@
 {% extends "base.html" %}
 
-{% block title %}Poll List{% endblock %}
+{% block title %}Awesome Poll List{% endblock %}
 
 {% block content %}
 <div class="container mt-5">
-    <h2 class="text-center mb-4 display-6 animate-title">Available Polls</h2>
+    <h1 class="text-center mb-5 display-4 animate-title">Awesome Polls</h1>
     <div class="row justify-content-center">
-        <div class="col-md-10">
-            <div class="list-group shadow-sm">
+        <div class="col-lg-8">
+            <div id="pollList" class="poll-list">
                 {% for poll in polls %}
-                <a href="{% url 'vote' poll.id %}" class="list-group-item list-group-item-action mb-3 py-4 poll-item rounded animate-poll-item">
-                    <div class="d-flex justify-content-between align-items-center">
+                <div class="poll-item card mb-4 shadow-sm">
+                    <div class="card-body d-flex justify-content-between align-items-center">
                         <div>
-                            <h5 class="mb-1">{{ poll.title }}</h5>
-                            <p class="mb-0 text-muted">{{ poll.question }}</p>
+                            <h2 class="h5 card-title mb-1">{{ poll.title }}</h2>
+                            <p class="card-text text-muted">{{ poll.question }}</p>
                         </div>
-                        <div class="badge bg-primary rounded-pill animate-badge">Vote Now</div>
+                        <a href="{% url 'vote' poll.id %}" class="btn btn-primary btn-vote">Vote Now</a>
                     </div>
-                </a>
+                </div>
                 {% empty %}
-                <p class="text-center text-muted">No polls available at the moment.</p>
+                <div class="alert alert-info text-center" role="alert">
+                    No polls available at the moment. Check back soon!
+                </div>
                 {% endfor %}
             </div>
         </div>
@@ -27,42 +29,50 @@
 </div>
 
 <style>
-    h2 {
-        font-weight: 700;
-        color: #333;
+    body {
+        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        min-height: 100vh;
+    }
+
+    .animate-title {
         opacity: 0;
-        animation: fadeInTitle 1s ease-out forwards;
+        animation: fadeInUp 1s ease-out forwards;
+    }
+
+    .poll-list {
+        opacity: 0;
+        animation: fadeIn 1s ease-out forwards;
+        animation-delay: 0.5s;
     }
 
     .poll-item {
-        background: linear-gradient(135deg, #e0e0e0 0%, #f5f7fa 100%);
-        border: 1px solid #ddd;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-        transition: transform 0.4s ease, box-shadow 0.4s ease;
-        padding: 15px;
-        border-radius: 8px;
-        margin: 10px 0;
-        background-color: #ffffff;
+        transition: all 0.3s ease;
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    .poll-item.show {
+        opacity: 1;
+        transform: translateY(0);
     }
 
     .poll-item:hover {
-        transform: translateY(-12px);
-        box-shadow: 0 16px 32px rgba(0, 0, 0, 0.2);
+        transform: translateY(-5px);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1) !important;
     }
 
-    .badge {
-        font-size: 0.875rem;
-        transition: background-color 0.4s ease, transform 0.4s ease;
-        transform: translateY(60%);
-        opacity: 0;
-        animation: fadeInBadge 0.8s ease-out forwards;
-        animation-delay: 0.4s;
+    .btn-vote {
+        transition: all 0.3s ease;
     }
 
-    @keyframes fadeInTitle {
+    .btn-vote:hover {
+        transform: scale(1.05);
+    }
+
+    @keyframes fadeInUp {
         from {
             opacity: 0;
-            transform: translateY(-20px);
+            transform: translateY(20px);
         }
         to {
             opacity: 1;
@@ -70,15 +80,29 @@
         }
     }
 
-    @keyframes fadeInBadge {
-        from {
-            opacity: 0;
-            transform: scale(0.5);
-        }
-        to {
-            opacity: 1;
-            transform: scale(1);
-        }
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
     }
 </style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const pollItems = document.querySelectorAll('.poll-item');
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('show');
+                }
+            });
+        }, {
+            threshold: 0.1
+        });
+
+        pollItems.forEach(item => {
+            observer.observe(item);
+        });
+    });
+</script>
 {% endblock %}

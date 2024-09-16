@@ -6,240 +6,216 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
     <link rel="icon" href="https://www-cdn.polleverywhere.com/assets/three-up/see-everyones-results-21a3eb9768bc7c630abefc8ab0785d4c6031629bc967a0d70805934816d2848b.png" type="image/png">
-    <title>{% block title %}HomePage{% endblock %}</title>
+    <title>{% block title %}Polling App{% endblock %}</title>
 
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
     <!-- Custom CSS -->
     <style>
-        /* General Styling */
+        :root {
+            --primary-color: #4a90e2;
+            --secondary-color: #f39c12;
+            --background-color: #f4f7fa;
+            --text-color: #333;
+            --navbar-bg: rgba(255, 255, 255, 0.95);
+            --card-bg: rgba(255, 255, 255, 0.98);
+        }
+
         body {
             font-family: 'Poppins', sans-serif;
-            background: linear-gradient(135deg, #00BFFF, #800080); /* Aqua to Purple Gradient */
-            color: #fff; /* Change text color to white for better contrast */
-            padding-top: 80px; /* Adjusted for fixed navbar */
-            transition: background-color 0.3s ease, color 0.3s ease;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            padding-top: 80px;
+            transition: all 0.3s ease;
         }
 
-        /* Navbar */
         .navbar {
-            background: rgba(255, 255, 255, 0.9); /* Slightly transparent background */
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            padding: 20px 30px;
-            font-weight: 500;
-            transition: background-color 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        .navbar:hover {
-            background-color: rgba(255, 255, 255, 1); /* Fully opaque on hover */
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+            background: var(--navbar-bg);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 15px 30px;
         }
 
         .navbar-brand {
-            font-size: 28px;
-            font-weight: 600;
-            color: #007bff;
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary-color);
         }
 
-        .navbar-toggler {
-            border: none;
+        .nav-link {
+            font-weight: 500;
+            color: var(--text-color);
+            transition: color 0.3s ease;
         }
 
-        /* Card Styles */
+        .nav-link:hover {
+            color: var(--primary-color);
+        }
+
         .card {
+            background: var(--card-bg);
+            border: none;
             border-radius: 15px;
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
-            background: rgba(255, 255, 255, 0.95); /* Slightly transparent card background */
-            color: #333;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
             transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
 
         .card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 12px 20px rgba(0, 0, 0, 0.15);
-        }
-
-        .card-title {
-            font-size: 1.5rem;
-            color: #007bff;
-            transition: color 0.3s ease;
-        }
-
-        .card-title:hover {
-            color: #0056b3;
-        }
-
-        .card-subtitle {
-            color: #6c757d;
-        }
-
-        /* Profile Card */
-        .profile-card {
-            width: 16rem;
-            border: 1px solid #dee2e6;
-            border-radius: 15px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-            background: rgba(255, 255, 255, 0.95); /* Slightly transparent */
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        .profile-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
         }
 
-        /* Poll Card */
-        .poll-card {
-            border: 1px solid #dee2e6;
-            border-radius: 15px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-            background: rgba(255, 255, 255, 0.95); /* Slightly transparent */
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        .btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
         }
 
-        .poll-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        .btn-primary:hover {
+            background-color: #3a7bd5;
+            border-color: #3a7bd5;
         }
 
-        /* Floating Button */
         .btn-floating {
             position: fixed;
-            bottom: 40px;
-            left: 95%;
-            transform: translateX(-50%);
-            background-color: #007bff;
-            color: white;
-            border-radius: 50%;
-            height: 60px;
+            bottom: 30px;
+            right: 30px;
             width: 60px;
-            font-size: 28px;
-            box-shadow: 0 8px 16px rgba(0, 91, 187, 0.2);
+            height: 60px;
+            border-radius: 50%;
+            background-color: var(--primary-color);
+            color: white;
             display: flex;
-            justify-content: center;
             align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
             transition: all 0.3s ease;
-            z-index: 1000;
         }
 
         .btn-floating:hover {
-            background-color: #0056b3;
-            transform: scale(1.1) translateX(-50%);
+            background-color: #3a7bd5;
+            transform: scale(1.1);
         }
 
-        /* Create Poll Option */
-        .create-poll-hidden {
-            display: none;
-            opacity: 0;
-            transition: opacity 0.3s ease, transform 0.3s ease;
-            position: fixed;
-            bottom: 120px;
-            left: 50%;
-            transform: translateX(-50%) scale(0.8);
-            z-index: 999;
+        .search-bar input {
+            border-radius: 20px;
+            border: 1px solid #ddd;
+            padding: 10px 15px;
         }
 
-        .create-poll-visible {
-            display: block;
-            opacity: 1;
-            transform: translateX(-50%) scale(1);
+        .search-bar button {
+            border-radius: 20px;
+            padding: 10px 20px;
         }
 
-        /* Button Click Animation */
-        .btn-floating.clicked {
-            animation: bounce 0.5s;
-        }
-
-        @keyframes bounce {
-            0% { transform: scale(1) translateX(-50%); }
-            50% { transform: scale(1.2) translateX(-50%); }
-            100% { transform: scale(1) translateX(-50%); }
-        }
-
-        /* Responsive Styling */
         @media (max-width: 768px) {
+            .navbar {
+                padding: 10px 15px;
+            }
+
             .search-bar {
-                margin-right: 0;
                 margin-top: 10px;
             }
-        } 
+
+            .btn-floating {
+                bottom: 20px;
+                right: 20px;
+                width: 50px;
+                height: 50px;
+                font-size: 20px;
+            }
+        }
     </style>
 </head>
 <body>
-<nav class="navbar navbar-expand-lg navbar-light fixed-top">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="{% url 'home' %}">Polling App</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'poll_list' %}">View Polls</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'poll_visualizations' %}">Real-Time Results</a>
-                </li>
-            </ul>
-            <div class="search-bar">
-                <form class="d-flex" action="{% url 'poll_search' %}" method="GET">
+    <nav class="navbar navbar-expand-lg navbar-light fixed-top">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="{% url 'home' %}">
+                <i class="fas fa-poll-h me-2"></i>Polling App
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'poll_list' %}"><i class="fas fa-list-ul me-1"></i>View Polls</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'poll_visualizations' %}"><i class="fas fa-chart-bar me-1"></i>Real-Time Results</a>
+                    </li>
+                    {% if user.is_authenticated %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'user_dashboard' %}"><i class="fas fa-tachometer-alt me-1"></i>Dashboard</a>
+                    </li>
+                    {% endif %}
+                </ul>
+                <form class="d-flex search-bar" action="{% url 'poll_search' %}" method="GET">
                     <input class="form-control me-2" type="search" name="query" placeholder="Search Polls" aria-label="Search">
-                    <button class="btn btn-outline-success" type="submit">Search</button>
+                    <button class="btn btn-outline-primary" type="submit"><i class="fas fa-search"></i></button>
                 </form>
+                <ul class="navbar-nav ms-auto">
+                    {% if user.is_authenticated %}
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="profileDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                {% if user.userprofile.profile_picture %}
+                                    <img src="{{ user.userprofile.profile_picture.url }}" alt="Profile" height="30" style="border-radius: 50%;">
+                                {% else %}
+                                    <img src="{% static 'images/default_profile.png' %}" alt="Profile" height="30" style="border-radius: 50%;">
+                                {% endif %}
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
+                                <li><a class="dropdown-item" href="{% url 'view_profile' %}"><i class="fas fa-user me-2"></i>Profile</a></li>
+                                <li><a class="dropdown-item" href="{% url 'edit_profile' %}"><i class="fas fa-cog me-2"></i>Settings</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="{% url 'login' %}"><i class="fas fa-sign-out-alt me-2"></i>Logout</a></li>
+                            </ul>
+                        </li>
+                    {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'login' %}"><i class="fas fa-sign-in-alt me-1"></i>Login</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'signup' %}"><i class="fas fa-user-plus me-1"></i>Signup</a>
+                        </li>
+                    {% endif %}
+                </ul>
             </div>
         </div>
-        <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-            {% if user.is_authenticated %}
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="profileDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        <!-- Dynamically show profile picture if uploaded -->
-                        {% if user.userprofile.profile_picture %}
-                            <img src="{{ user.userprofile.profile_picture.url }}" alt="Profile" height="30" style="border-radius: 50%;">
-                        {% else %}
-                            <img src="{% static 'images/default_profile.png' %}" alt="Profile" height="30" style="border-radius: 50%;">
-                        {% endif %}
-                    </a>
-                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
-                        <li><a class="dropdown-item" href="{% url 'view_profile' %}">Profile</a></li>
-                        <li><a class="dropdown-item" href="{% url 'edit_profile' %}">Settings</a></li>
-                        <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item" href="{% url 'login' %}">Logout</a></li>
-                    </ul>
-                </li>
-            {% else %}
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'login' %}">Login</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'signup' %}">Signup</a>
-                </li>
-            {% endif %}
-        </ul>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container mt-4">
+        {% block content %}
+        <!-- Content goes here -->
+        {% endblock %}
     </div>
-</nav>
 
-<!-- Main Content -->
-<div class="container mt-4">
-    {% block content %}
-    <!-- Content goes here -->
-    {% endblock %}
-</div>
+    <!-- Floating Button -->
+    <a href="{% url 'create_poll' %}" class="btn-floating" id="createPollBtn">
+        <i class="fas fa-plus"></i>
+    </a>
 
-<!-- Floating Button -->
-<a href="{% url 'create_poll' %}" class="btn-floating" id="createPollBtn">+
-    <i class="fas fa-plus"></i>
-</a>
+    <!-- Bootstrap JS and Popper.js -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
 
-
-
-<!-- Bootstrap JS and Font Awesome -->
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script src="https://kit.fontawesome.com/a076d05399.js"></script>
-
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var createPollBtn = document.getElementById('createPollBtn');
+            createPollBtn.addEventListener('click', function() {
+                this.classList.add('clicked');
+                setTimeout(function() {
+                    createPollBtn.classList.remove('clicked');
+                }, 300);
+            });
+        });
+    </script>
 </body>
 </html>

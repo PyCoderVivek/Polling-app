@@ -1,50 +1,61 @@
 {% extends "base.html" %}
 
-{% block title %}Create Poll{% endblock %}
+{% block title %}Create Poll - PollSocial{% endblock %}
 
 {% block content %}
 <div class="container mt-5">
   <div class="row justify-content-center">
-    <div class="col-md-8">
-      <div id="form-card" class="card shadow border-0 animate-card">
-        <div class="card-header bg-primary text-white text-center rounded-top">
+    <div class="col-lg-8 col-md-10">
+      <div id="form-card" class="card shadow-lg border-0 animate-card">
+        <div class="card-header bg-gradient text-center py-4 rounded-top">
           <h2 class="mb-0">Create a New Poll</h2>
         </div>
-        <div class="card-body p-4">
-          <form method="post" action="{% url 'create_poll' %}" enctype="multipart/form-data">
+        <div class="card-body p-5">
+          <form method="post" action="{% url 'create_poll' %}" enctype="multipart/form-data" id="create-poll-form">
             {% csrf_token %}
-            <div class="mb-3">
-              {{ poll_form.as_p }}
+            <div class="mb-4">
+              <label for="poll-title" class="form-label">Poll Title</label>
+              <input type="text" class="form-control form-control-lg" id="poll-title" name="title" placeholder="Enter poll title" required>
+            </div>
+            <div class="mb-4">
+              <label for="poll-question" class="form-label">Poll Question</label>
+              <textarea class="form-control" id="poll-question" name="question" rows="4" placeholder="Enter the poll question" required></textarea>
             </div>
             <div class="mb-4">
               <label for="poll-image" class="form-label">Upload an Image (optional)</label>
               <input type="file" class="form-control" id="poll-image" name="poll_image" accept="image/*">
             </div>
             <div id="options-container" class="mb-4">
-              <label class="form-label">Options</label>
-              <div class="input-group mb-2 option-item">
-                <input type="text" class="form-control" name="options" placeholder="Option 1" required>
-                <button type="button" class="btn btn-outline-danger remove-option"><i class="bi bi-x-lg"></i></button>
+              <label class="form-label">Poll Options</label>
+              <div class="option-item mb-2">
+                <div class="input-group">
+                  <span class="input-group-text"><i class="bi bi-1-circle"></i></span>
+                  <input type="text" class="form-control" name="options" placeholder="Option 1" required>
+                  <button type="button" class="btn btn-outline-danger remove-option"><i class="bi bi-trash"></i></button>
+                </div>
               </div>
-              <div class="input-group mb-2 option-item">
-                <input type="text" class="form-control" name="options" placeholder="Option 2" required>
-                <button type="button" class="btn btn-outline-danger remove-option"><i class="bi bi-x-lg"></i></button>
+              <div class="option-item mb-2">
+                <div class="input-group">
+                  <span class="input-group-text"><i class="bi bi-2-circle"></i></span>
+                  <input type="text" class="form-control" name="options" placeholder="Option 2" required>
+                  <button type="button" class="btn btn-outline-danger remove-option"><i class="bi bi-trash"></i></button>
+                </div>
               </div>
             </div>
             <div class="d-flex justify-content-between mb-4">
-              <button type="button" id="add-option" class="btn btn-outline-secondary"><i class="bi bi-plus-lg"></i> Add Option</button>
+              <button type="button" id="add-option" class="btn btn-outline-primary">
+                <i class="bi bi-plus-lg"></i> Add Option
+              </button>
             </div>
-            <button type="submit" class="btn btn-primary w-100 animate-submit">Create Poll</button>
+            <button type="submit" class="btn btn-primary btn-lg w-100 animate-submit">Create Poll</button>
           </form>
         </div>
       </div>
     </div>
-
-    <!-- Right Card for Displaying the Uploaded Photo -->
-    <div id="photo-card" class="col-md-4 mt-5">
-      <div class="card shadow border-0 animate-photo-card d-none">
+    <div id="photo-preview" class="col-lg-4 col-md-10 mt-4 mt-lg-0">
+      <div class="card shadow-lg border-0 animate-photo-card d-none">
         <div class="card-body p-4 text-center">
-          <h5 class="card-title">Uploaded Image</h5>
+          <h5 class="card-title mb-3">Poll Image Preview</h5>
           <img id="uploaded-photo" src="#" alt="Uploaded Image" class="img-fluid rounded">
         </div>
       </div>
@@ -52,83 +63,91 @@
   </div>
 </div>
 
-<!-- Icons from Bootstrap Icons CDN -->
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
 
 <style>
-  /* Card Animation */
+  :root {
+    --primary-color: #4a90e2;
+    --secondary-color: #f39c12;
+    --success-color: #2ecc71;
+    --danger-color: #e74c3c;
+    --light-color: #ecf0f1;
+    --dark-color: #34495e;
+  }
+
+  body {
+    background-color: var(--light-color);
+    color: var(--dark-color);
+  }
+
   .animate-card {
     transition: transform 0.4s ease, box-shadow 0.4s ease;
-    background-color: #f9f9f9;
+    background-color: #ffffff;
     border-radius: 15px;
   }
 
   .animate-card:hover {
-    transform: scale(1.02);
-    box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.1);
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
   }
 
-  /* Submit Button Animation */
+  .card-header {
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    border-bottom: none;
+    color: blue;
+  }
+
   .animate-submit {
-    transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
-    background-color: #007bff;
-    color: white;
-    border-radius: 8px;
+    transition: all 0.3s ease;
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
   }
 
   .animate-submit:hover {
-    background-color: #0056b3;
+    background-color: var(--secondary-color);
+    border-color: var(--secondary-color);
     transform: translateY(-2px);
-    box-shadow: 0px 5px 15px rgba(0, 86, 179, 0.3);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
   }
 
-  /* Secondary Button Styling */
-  .btn-outline-secondary {
-    border-color: #6c757d;
-    color: #6c757d;
-    transition: background-color 0.3s ease, color 0.3s ease;
-  }
-
-  .btn-outline-secondary:hover {
-    background-color: #6c757d;
-    color: #fff;
-  }
-
-  /* Form Control Styling */
   .form-control {
     transition: box-shadow 0.3s ease, border-color 0.3s ease;
     border-radius: 8px;
   }
 
   .form-control:focus {
-    box-shadow: 0px 0px 8px rgba(0, 123, 255, 0.5);
-    border-color: #007bff;
+    box-shadow: 0 0 0 0.2rem rgba(74, 144, 226, 0.25);
+    border-color: var(--primary-color);
   }
 
-  /* Option Input Styling */
-  .option-item .form-control {
-    background-color: #f5f5f5;
-    border: 1px solid #ddd;
-    border-radius: 8px;
+  .option-item .input-group-text {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
   }
 
-  .option-item .form-control:focus {
-    background-color: #fff;
+  .btn-outline-danger {
+    color: var(--danger-color);
+    border-color: var(--danger-color);
   }
 
-  /* Card Header Gradient */
-  .card-header {
-    background: linear-gradient(135deg, #4abef0, #007bff);
+  .btn-outline-danger:hover {
+    background-color: var(--danger-color);
+    color: white;
   }
 
-  /* Card Styling */
-  .card {
-    border-radius: 15px;
+  .btn-outline-primary {
+    color: var(--primary-color);
+    border-color: var(--primary-color);
   }
 
-  /* Photo Card Animation */
+  .btn-outline-primary:hover {
+    background-color: var(--primary-color);
+    color: white;
+  }
+
   .animate-photo-card {
-    transition: opacity 0.4s ease, transform 0.4s ease;
+    transition: all 0.4s ease;
   }
 
   .photo-card-visible {
@@ -142,63 +161,70 @@
   }
 
   #uploaded-photo {
-    max-height: 220px;
+    max-height: 300px;
     object-fit: cover;
     border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
   }
 
-  @media (max-width: 768px) {
-    #form-card {
+  @media (max-width: 992px) {
+    #form-card, #photo-preview {
       width: 100%;
     }
   }
 </style>
 
 <script>
-  document.getElementById('add-option').addEventListener('click', function() {
-    const container = document.getElementById('options-container');
-    const optionCount = container.querySelectorAll('.option-item').length;
-    const optionDiv = document.createElement('div');
-    optionDiv.className = 'input-group mb-2 option-item';
-    optionDiv.innerHTML = `
-      <input type="text" class="form-control" name="options" placeholder="Option ${optionCount + 1}" required>
-      <button type="button" class="btn btn-outline-danger remove-option"><i class="bi bi-x-lg"></i></button>
+document.addEventListener('DOMContentLoaded', function() {
+  const optionsContainer = document.getElementById('options-container');
+  const addOptionBtn = document.getElementById('add-option');
+  const photoPreview = document.getElementById('photo-preview');
+  const uploadedPhoto = document.getElementById('uploaded-photo');
+  const pollImageInput = document.getElementById('poll-image');
+
+  function updateOptionNumbers() {
+    optionsContainer.querySelectorAll('.option-item').forEach((item, index) => {
+      item.querySelector('.input-group-text i').className = `bi bi-${index + 1}-circle`;
+      item.querySelector('input').placeholder = `Option ${index + 1}`;
+    });
+  }
+
+  addOptionBtn.addEventListener('click', function() {
+    const optionCount = optionsContainer.querySelectorAll('.option-item').length;
+    const newOption = document.createElement('div');
+    newOption.className = 'option-item mb-2';
+    newOption.innerHTML = `
+      <div class="input-group">
+        <span class="input-group-text"><i class="bi bi-${optionCount + 1}-circle"></i></span>
+        <input type="text" class="form-control" name="options" placeholder="Option ${optionCount + 1}" required>
+        <button type="button" class="btn btn-outline-danger remove-option"><i class="bi bi-trash"></i></button>
+      </div>
     `;
-    container.appendChild(optionDiv);
+    optionsContainer.appendChild(newOption);
+    newOption.querySelector('input').focus();
   });
 
-  document.getElementById('options-container').addEventListener('click', function(e) {
+  optionsContainer.addEventListener('click', function(e) {
     if (e.target.classList.contains('remove-option') || e.target.closest('.remove-option')) {
       e.target.closest('.option-item').remove();
+      updateOptionNumbers();
     }
   });
 
-  document.getElementById('poll-image').addEventListener('change', function(e) {
-    const row = document.querySelector('.row');
-    const photoCard = document.getElementById('photo-card');
-    const uploadedPhoto = document.getElementById('uploaded-photo');
-
-    if (e.target.files.length > 0) {
+  pollImageInput.addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    if (file) {
       const reader = new FileReader();
-      reader.onload = function(event) {
-        uploadedPhoto.src = event.target.result;
-        photoCard.querySelector('.card').classList.remove('d-none');
+      reader.onload = function(e) {
+        uploadedPhoto.src = e.target.result;
+        photoPreview.querySelector('.card').classList.remove('d-none');
         setTimeout(function() {
-          photoCard.querySelector('.card').classList.add('photo-card-visible');
-          photoCard.querySelector('.card').classList.remove('photo-card-hidden');
-        }, 10);
+          photoPreview.querySelector('.card').classList.add('photo-card-visible');
+        }, 50);
       };
-      reader.readAsDataURL(e.target.files[0]);
-
-      row.classList.add('shift-right');
-    } else {
-      photoCard.querySelector('.card').classList.add('photo-card-hidden');
-      setTimeout(function() {
-        photoCard.querySelector('.card').classList.add('d-none');
-        photoCard.querySelector('.card').classList.remove('photo-card-visible');
-      }, 400);
+      reader.readAsDataURL(file);
     }
   });
+});
 </script>
-
 {% endblock %}

@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block title %}User Dashboard{% endblock %}
+
+{% block content %}
+    <div class="container mt-5">
+        <h2 class="recent-polls-heading">Your Polls</h2>
+        <div class="row">
+            {% for data in poll_data %}
+                <div class="col-md-4 mb-4">
+                    <a href="{% url 'poll_results' data.poll.id %}" class="card-link">
+                        <div class="card poll-card">
+                            <div class="card-header">
+                                <h5 class="card-title">{{ data.poll.title }}</h5>
+                            </div>
+                            <div class="card-body">
+                                <h6 class="card-subtitle mb-2 text-muted">{{ data.poll.question }}</h6>
+                                
+                                <!-- Poll Options -->
+                                <ul class="list-group mb-3">
+                                    {% for option in data.options %}
+                                        <li class="list-group-item">
+                                            {{ option.option_text }}: {{ option.votes.count }} votes
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                                
+                                <!-- Display Total Votes -->
+                                <p class="text-muted">Total Votes: {{ data.total_votes }}</p>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            {% empty %}
+                <p>No polls available or results to display.</p>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Floating Plus Button -->
+    <a href="{% url 'create_poll' %}" class="btn btn-floating" id="floating-btn">
+        +
+        <i class="bi bi-plus"></i>
+    </a>
+{% endblock %}

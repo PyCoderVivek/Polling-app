@@ -4,6 +4,7 @@ from .forms import PollForm, VoteForm
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.db.models import Count
 from Authentication.models import User
+
 def poll_visualizations_view(request):
     polls = Poll.objects.all()
     poll_data = []
@@ -31,10 +32,10 @@ def create_poll_view(request):
             poll = poll_form.save(commit=False)
             poll.creator = request.user  # Associate poll with the user
             poll.save()
-            options = request.POST.getlist('options')
+            options = request.POST.getlist('options')  # Get options from the form
             for option_text in options:
                 PollOption.objects.create(poll=poll, option_text=option_text)
-            return redirect('poll_list')
+            return redirect('poll_list')  # Redirect to the poll list after saving
     else:
         poll_form = PollForm()
     return render(request, 'polls/create_poll.html', {'poll_form': poll_form})
@@ -70,8 +71,10 @@ def poll_results_view(request, poll_id):
     poll = get_object_or_404(Poll, id=poll_id)
     options = poll.options.all()
     option_votes = {option: option.votes.count() for option in options}
+    
+    total_votes = sum(option_votes.values()) 
 
-    total_votes = poll.total_votes()  # Get total votes from the Poll model
+    option_percentages = {option: (votes / total_votes * 100) if total_votes > 0 else 0 for option, votes in option_votes.items()}
 
     labels = [option.option_text for option in options]
     data = [option_votes[option] for option in options]
@@ -79,7 +82,8 @@ def poll_results_view(request, poll_id):
     return render(request, 'polls/results.html', {
         'poll': poll,
         'option_votes': option_votes,
-        'total_votes': total_votes,  # Pass total_votes to the template
+        'total_votes': total_votes,
+        'option_percentages': option_percentages,  # Pass the calculated percentages
         'labels': labels,
         'data': data,
     })
@@ -111,3 +115,26 @@ def poll_search(request):
     query = request.GET.get('query')
     polls = Poll.objects.filter(title__icontains=query) | Poll.objects.filter(question__icontains=query)
     return render(request, 'polls/poll_list.html', {'polls': polls})
+
+@login_required
+def user_dashboard_view(request):
+    user = request.user
+    polls = Poll.objects.filter(creator=user)
+    poll_data = []
+
+    for poll in polls:
+        options = poll.options.all()
+        labels = [option.option_text for option in options]
+        data = [option.votes.count() for option in options]
+        total_votes = sum(data)  
+
+        poll_data.append({
+            'poll': poll,
+            'options': options,
+            'labels': labels,
+            'data': data,
+            'total_votes': total_votes,
+        })
+
+    return render(request, 'polls/user_dashboard.html', {'poll_data': poll_data})
+

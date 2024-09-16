@@ -1,75 +1,177 @@
 {% extends "base.html" %}
 
-{% block title %}HomePage{% endblock %}
+{% block title %}Welcome to Polling App{% endblock %}
 
 {% block content %}
+<style>
+    .hero-section {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 100px 0;
+        margin-bottom: 50px;
+        clip-path: polygon(0 0, 100% 0, 100% 85%, 0 100%);
+    }
 
-    <!-- Poll Results -->
-    <div class="container mt-5">
-        <h2 class="recent-polls-heading">Recent Polls</h2>
-        <div class="row">
-            {% for result in poll_results %}
-                <div class="col-md-4 mb-4">
-                    <a href="{% url 'poll_results' result.poll.id %}" class="card-link">
-                        <div class="card poll-card">
-                            <div class="card-header">
-                                <h5 class="card-title">{{ result.poll.title }}</h5>
-                            </div>
-                            <div class="card-body">
-                                <h6 class="card-subtitle mb-2 text-muted">{{ result.poll.question }}</h6>
-                                <div class="chart-container">
-                                    <canvas id="poll-chart-{{ result.poll.id }}" width="300" height="200"></canvas>
-                                </div>
-                                <script>
-                                    document.addEventListener('DOMContentLoaded', function() {
-                                        const ctx{{ result.poll.id }} = document.getElementById('poll-chart-{{ result.poll.id }}').getContext('2d');
-                                        new Chart(ctx{{ result.poll.id }}, {
-                                            type: 'bar',
-                                            data: {
-                                                labels: {{ result.labels|safe }},
-                                                datasets: [{
-                                                    label: 'Votes',
-                                                    data: {{ result.data|safe }},
-                                                    backgroundColor: [
-                                                        'rgba(54, 162, 235, 0.6)',  // Blue
-                                                        'rgba(153, 102, 255, 0.6)', // Purple
-                                                        'rgba(255, 159, 64, 0.6)',  // Orange
-                                                        'rgba(255, 205, 86, 0.6)',  // Yellow
-                                                        'rgba(201, 203, 207, 0.6)', // Grey
-                                                    ],
-                                                    borderColor: [
-                                                        'rgba(54, 162, 235, 1)',    // Blue
-                                                        'rgba(153, 102, 255, 1)',   // Purple
-                                                        'rgba(255, 159, 64, 1)',    // Orange
-                                                        'rgba(255, 205, 86, 1)',    // Yellow
-                                                        'rgba(201, 203, 207, 1)',   // Grey
-                                                    ],
-                                                    borderWidth: 1
-                                                }]
-                                            },
-                                            options: {
-                                                scales: {
-                                                    y: {
-                                                        beginAtZero: true
-                                                    }
-                                                }
-                                            }
-                                        });
-                                    });
-                                </script>
-                            </div>
-                        </div>
-                    </a>
-                </div>
-            {% empty %}
-                <p>No polls available or results to display.</p>
-            {% endfor %}
-        </div>
+    .hero-title {
+        font-size: 3.5rem;
+        font-weight: 700;
+        margin-bottom: 20px;
+    }
+
+    .hero-subtitle {
+        font-size: 1.5rem;
+        margin-bottom: 30px;
+    }
+
+    .recent-polls-heading {
+        font-size: 2.5rem;
+        font-weight: 600;
+        margin-bottom: 30px;
+        color: #333;
+        text-align: center;
+    }
+
+    .poll-card {
+        height: 100%;
+        transition: all 0.3s ease;
+        border: none;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+
+    .poll-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+    }
+
+    .card-header {
+        background-color: #f8f9fa;
+        border-bottom: none;
+    }
+
+    .card-title {
+        color: #4a4a4a;
+        font-weight: 600;
+    }
+
+    .card-subtitle {
+        font-size: 0.9rem;
+    }
+
+    .list-group-item {
+        border: none;
+        padding: 10px 15px;
+        background-color: #f8f9fa;
+        margin-bottom: 5px;
+        border-radius: 5px;
+        transition: background-color 0.3s ease;
+    }
+
+    .list-group-item:hover {
+        background-color: #e9ecef;
+    }
+
+    .btn-floating {
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        text-align: center;
+        font-size: 24px;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        transition: all 0.3s ease;
+        z-index: 1000;
+    }
+
+    .btn-floating:hover {
+        transform: scale(1.1);
+        box-shadow: 0 6px 12px rgba(0,0,0,0.2);
+    }
+
+    @media (max-width: 768px) {
+        .hero-title {
+            font-size: 2.5rem;
+        }
+
+        .hero-subtitle {
+            font-size: 1.2rem;
+        }
+    }
+</style>
+
+<div class="hero-section">
+    <div class="container">
+        <h1 class="hero-title">Welcome to Polling App</h1>
+        <p class="hero-subtitle">Create, share, and analyze polls with ease</p>
+        <a href="{% url 'create_poll' %}" class="btn btn-light btn-lg">Create Your First Poll</a>
     </div>
+</div>
 
-    <!-- Floating Plus Button -->
-    <a href="{% url 'create_poll' %}" class="btn btn-floating" id="floating-btn">
-        +
-        <i class="bi bi-plus"></i>
-    </a>
+<div class="container">
+    <h2 class="recent-polls-heading">Recent Polls</h2>
+    <div class="row" id="pollGrid">
+        {% for result in poll_results %}
+            <div class="col-md-4 mb-4">
+                <a href="{% url 'poll_results' result.poll.id %}" class="text-decoration-none">
+                    <div class="card poll-card">
+                        <div class="card-header">
+                            <h5 class="card-title">{{ result.poll.title }}</h5>
+                        </div>
+                        <div class="card-body">
+                            <h6 class="card-subtitle mb-2 text-muted">{{ result.poll.question }}</h6>
+                            <ul class="list-group mt-3">
+                                {% for option in result.poll.options.all %}
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        {{ option.option_text }}
+                                        <span class="badge bg-primary rounded-pill">{{ option.votes.count }}</span>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        {% empty %}
+            <div class="col-12 text-center">
+                <p class="lead">No polls available. Be the first to create one!</p>
+                <a href="{% url 'create_poll' %}" class="btn btn-primary btn-lg mt-3">Create a Poll</a>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+
+<a href="{% url 'create_poll' %}" class="btn btn-primary btn-floating" id="createPollBtn">
+    <i class="fas fa-plus"></i>
+</a>
+
+<script src="https://unpkg.com/masonry-layout@4/dist/masonry.pkgd.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var elem = document.querySelector('#pollGrid');
+        var msnry = new Masonry(elem, {
+            itemSelector: '.col-md-4',
+            percentPosition: true
+        });
+
+        var createPollBtn = document.getElementById('createPollBtn');
+        createPollBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            this.classList.add('animate__animated', 'animate__rubberBand');
+            setTimeout(() => {
+                window.location.href = this.getAttribute('href');
+            }, 500);
+        });
+
+        var pollCards = document.querySelectorAll('.poll-card');
+        pollCards.forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-10px)';
+            });
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0)';
+            });
+        });
+    });
+</script>
 {% endblock %}

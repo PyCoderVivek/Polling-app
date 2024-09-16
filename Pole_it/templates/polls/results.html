@@ -1,137 +1,229 @@
 {% extends "base.html" %}
 
-{% block title %}Poll Results{% endblock %}
+{% block title %}{{ poll.title }} Results{% endblock %}
 
 {% block content %}
-<div class="container mt-5">
-    <h2 class="text-center mb-4 animate-title">{{ poll.title }} Results</h2>
-    
-    <div class="card shadow-lg rounded-lg animate-card">
-        <div class="card-header bg-primary text-white rounded-top animate-card-header">
-            <h4 class="mb-0">{{ poll.question }}</h4>
-        </div>
-        <div class="card-body">
-            {% if poll.image %}
-                <div class="text-center mb-4 animate-image" style="max-width: 400px; margin: auto;">
-                    <img src="{{ poll.image.url }}" alt="Poll Image" class="img-fluid rounded" style="max-height: 300px; width: auto;">
+<div class="container-fluid py-5 bg-gradient">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <h1 class="text-center mb-5 display-3 fw-bold text-white animate-title">{{ poll.title }} Results</h1>
+            
+            <div class="card shadow-lg rounded-lg mb-5 animate-card">
+                <div class="card-header bg-primary text-white p-4 rounded-top">
+                    <h2 class="h3 mb-0 fw-bold">{{ poll.question }}</h2>
                 </div>
-            {% endif %}
-            <div class="mb-4">
-                <p><strong>Creator:</strong> {{ poll.creator.username }}</p>
-                <p><strong>Total Votes:</strong> {{ total_votes }}</p>
+                <div class="card-body p-4">
+                    {% if poll.image %}
+                        <div class="text-center mb-4 animate-image">
+                            <img src="{{ poll.image.url }}" alt="Poll Image" class="img-fluid rounded shadow-sm" style="max-height: 300px; width: auto;">
+                        </div>
+                    {% endif %}
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <div class="d-flex align-items-center mb-2">
+                                <i class="bi bi-person-circle fs-4 me-2 text-primary"></i>
+                                <span class="fw-medium">Creator:</span>
+                                <span class="badge bg-secondary ms-2">{{ poll.creator.username }}</span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="d-flex align-items-center">
+                                <i class="bi bi-bar-chart-fill fs-4 me-2 text-success"></i>
+                                <span class="fw-medium">Total Votes:</span>
+                                <span class="badge bg-success ms-2">{{ total_votes }}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <ul class="list-group list-group-flush animate-list">
+                        {% for option, votes in option_votes.items %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center py-3 option-item">
+                            <span class="fw-medium">{{ option.option_text }}</span>
+                            <div class="d-flex align-items-center">
+                                <div class="progress me-3" style="width: 100px; height: 10px;">
+                                    <div class="progress-bar bg-primary" role="progressbar" style="width: {{ option_percentages.option }}%;" aria-valuenow="{{ option_percentages.option }}" aria-valuemin="0" aria-valuemax="100"></div>
+                                </div>
+                                <span class="badge bg-primary rounded-pill me-2">{{ votes }}</span>
+                                <span class="badge bg-info rounded-pill">{{ option_percentages.option }}votes</span>
+                            </div>
+                        </li>
+                        {% empty %}
+                        <li class="list-group-item text-center py-3">No options available.</li>
+                        {% endfor %}
+                    </ul>
+                </div>
             </div>
-            <ul class="list-group list-group-flush animate-list">
-                {% for option, votes in option_votes.items %}
-                <li class="list-group-item d-flex justify-content-between align-items-center">
-                    {{ option.option_text }}
-                    <span class="badge bg-primary rounded-pill animate-badge">{{ votes }} votes</span>
-                </li>
-                {% empty %}
-                <li class="list-group-item text-center">No options available.</li>
-                {% endfor %}
-            </ul>
-        </div>
-    </div>
 
-    <div class="text-center mt-4">
-        <button id="showPlotButton" class="btn btn-success px-4 py-2 rounded-pill shadow-sm animate-button">Show Plot</button>
-    </div>
+            <div class="text-center mb-4">
+                <button id="showPlotButton" class="btn btn-primary btn-lg px-5 py-3 rounded-pill shadow-sm animate-button">
+                    <i class="bi bi-bar-chart-fill me-2"></i>Show Results Chart
+                </button>
+            </div>
 
-    <div class="text-center mt-2">
-        <select id="plotType" class="form-select w-auto mx-auto rounded-pill shadow-sm animate-dropdown">
-            <option value="bar">Bar</option>
-            <option value="pie">Pie</option>
-            <option value="doughnut">Doughnut</option>
-        </select>
-    </div>
-
-    <div id="plottingCard" class="card mt-3 shadow-lg rounded-lg animate-plot-card" style="display: none;">
-        <div class="card-header bg-secondary text-white rounded-top">
-            <h4 class="text-center mb-0">Poll Results Chart</h4>
-        </div>
-        <div class="card-body">
-            <canvas id="resultsChart" style="width: 100%; height: 400px;"></canvas>
+            <div id="plottingCard" class="card shadow-lg rounded-lg mb-5 animate-plot-card" style="display: none;">
+                <div class="card-header bg-secondary text-white p-3 rounded-top">
+                    <h3 class="h5 text-center mb-0 fw-bold">Poll Results Visualization</h3>
+                </div>
+                <div class="card-body p-4">
+                    <div class="mb-3">
+                        <label for="plotType" class="form-label fw-bold">Select Chart Type:</label>
+                        <select id="plotType" class="form-select form-select-lg rounded-pill">
+                            <option value="bar">Bar Chart</option>
+                            <option value="pie">Pie Chart</option>
+                            <option value="doughnut">Doughnut Chart</option>
+                            <option value="polarArea">Polar Area Chart</option>
+                        </select>
+                    </div>
+                    <div class="chart-container" style="position: relative; height:50vh; width:100%">
+                        <canvas id="resultsChart"></canvas>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
 
+<style>
+    .bg-gradient {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+    
+    .animate-title, .animate-card, .animate-image, .animate-list, .animate-button, .animate-plot-card {
+        opacity: 0;
+        transform: translateY(20px);
+        animation: fadeInUp 0.6s ease-out forwards;
+    }
+    
+    @keyframes fadeInUp {
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    .animate-card { animation-delay: 0.2s; }
+    .animate-image { animation-delay: 0.4s; }
+    .animate-list { animation-delay: 0.6s; }
+    .animate-button { animation-delay: 0.8s; }
+    .animate-plot-card { animation-delay: 1s; }
+    
+    .option-item {
+        transition: all 0.3s ease;
+    }
+    
+    .option-item:hover {
+        background-color: #f8f9fa;
+        transform: translateX(5px);
+    }
+    
+    #showPlotButton {
+        transition: all 0.3s ease;
+    }
+    
+    #showPlotButton:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2) !important;
+    }
+    
+    .progress {
+        overflow: visible;
+    }
+    
+    .progress-bar {
+        position: relative;
+        overflow: visible;
+        transition: width 1s ease-in-out;
+    }
+    
+    .chart-container {
+        transition: all 0.5s ease;
+    }
+</style>
+
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
 <script>
-    document.getElementById('showPlotButton').addEventListener('click', function() {
+    document.addEventListener('DOMContentLoaded', function() {
+        const showPlotButton = document.getElementById('showPlotButton');
         const plottingCard = document.getElementById('plottingCard');
-        if (plottingCard.style.display === "none") {
-            plottingCard.style.display = "block";
-            this.textContent = "Hide Plot";
-        } else {
-            plottingCard.style.display = "none";
-            this.textContent = "Show Plot";
-        }
-    });
+        const plotTypeSelect = document.getElementById('plotType');
+        const ctx = document.getElementById('resultsChart').getContext('2d');
+        let resultsChart;
 
-    const ctx = document.getElementById('resultsChart').getContext('2d');
-    let resultsChart = new Chart(ctx, {
-        type: 'bar',
-        data: {
-            labels: {{ labels|safe }},
-            datasets: [{
-                label: 'Votes',
-                data: {{ data|safe }},
-                backgroundColor: [
-                    'rgba(54, 162, 235, 0.6)',
-                    'rgba(153, 102, 255, 0.6)',
-                    'rgba(255, 159, 64, 0.6)',
-                    'rgba(255, 205, 86, 0.6)',
-                    'rgba(201, 203, 207, 0.6)'
-                ],
-                borderColor: [
-                    'rgba(54, 162, 235, 1)',
-                    'rgba(153, 102, 255, 1)',
-                    'rgba(255, 159, 64, 1)',
-                    'rgba(255, 205, 86, 1)',
-                    'rgba(201, 203, 207, 1)'
-                ],
-                borderWidth: 1
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-        }
-    });
+        const chartColors = [
+            'rgba(255, 99, 132, 0.7)',
+            'rgba(54, 162, 235, 0.7)',
+            'rgba(255, 206, 86, 0.7)',
+            'rgba(75, 192, 192, 0.7)',
+            'rgba(153, 102, 255, 0.7)',
+            'rgba(255, 159, 64, 0.7)'
+        ];
 
-    document.getElementById('plotType').addEventListener('change', function() {
-        const selectedType = this.value;
-        resultsChart.destroy();
-        resultsChart = new Chart(ctx, {
-            type: selectedType,
-            data: {
-                labels: {{ labels|safe }},
-                datasets: [{
-                    label: 'Votes',
-                    data: {{ data|safe }},
-                    backgroundColor: [
-                        'rgba(54, 162, 235, 0.6)',
-                        'rgba(153, 102, 255, 0.6)',
-                        'rgba(255, 159, 64, 0.6)',
-                        'rgba(255, 205, 86, 0.6)',
-                        'rgba(201, 203, 207, 0.6)'
-                    ],
-                    borderColor: [
-                        'rgba(54, 162, 235, 1)',
-                        'rgba(153, 102, 255, 1)',
-                        'rgba(255, 159, 64, 1)',
-                        'rgba(255, 205, 86, 1)',
-                        'rgba(201, 203, 207, 1)'
-                    ],
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
+        function createChart(type) {
+            if (resultsChart) {
+                resultsChart.destroy();
+            }
+
+            resultsChart = new Chart(ctx, {
+                type: type,
+                data: {
+                    labels: {{ labels|safe }},
+                    datasets: [{
+                        label: 'Votes',
+                        data: {{ data|safe }},
+                        backgroundColor: chartColors,
+                        borderColor: chartColors.map(color => color.replace('0.7', '1')),
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        },
+                        title: {
+                            display: true,
+                            text: '{{ poll.title }} - Vote Distribution',
+                            font: {
+                                size: 18,
+                                weight: 'bold'
+                            }
+                        }
+                    },
+                    animation: {
+                        animateScale: true,
+                        animateRotate: true
+                    }
+                }
+            });
+        }
+
+        showPlotButton.addEventListener('click', function() {
+            if (plottingCard.style.display === "none") {
+                plottingCard.style.display = "block";
+                this.innerHTML = '<i class="bi bi-eye-slash-fill me-2"></i>Hide Results Chart';
+                createChart(plotTypeSelect.value);
+                plottingCard.scrollIntoView({ behavior: 'smooth' });
+            } else {
+                plottingCard.style.display = "none";
+                this.innerHTML = '<i class="bi bi-bar-chart-fill me-2"></i>Show Results Chart';
             }
         });
+
+        plotTypeSelect.addEventListener('change', function() {
+            createChart(this.value);
+        });
+
+        // Animate progress bars
+        setTimeout(() => {
+            document.querySelectorAll('.progress-bar').forEach(bar => {
+                const width = bar.style.width;
+                bar.style.width = '0%';
+                setTimeout(() => {
+                    bar.style.width = width;
+                }, 50);
+            });
+        }, 500);
     });
 </script>
 {% endblock %}
