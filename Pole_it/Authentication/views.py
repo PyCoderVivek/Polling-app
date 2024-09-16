@@ -24,11 +24,13 @@ def home_view(request):
         options = poll.options.all()
         labels = [option.option_text for option in options]
         data = [option.votes.count() for option in options]
+        total_votes = sum(data)  # Calculate total votes for the poll
 
         poll_results.append({
             'poll': poll,
             'labels': labels,
             'data': data,
+            'total_votes': total_votes,
         })
 
     context = {
