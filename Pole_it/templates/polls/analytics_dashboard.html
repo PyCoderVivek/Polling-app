@@ -1,296 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="https://logos-world.net/wp-content/uploads/2021/02/Google-Analytics-Logo.png" type="image/png">
     <title>Analytics Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #007bff;
+            --secondary-color: #6c757d;
+            --background-color: #1c1f26;
+            --card-background: #2b2f3a;
+            --text-color: #e0e6ed;
+        }
+
+        body {
+            background-color: var(--background-color);
+            color: var(--text-color);
+            font-family: 'Roboto', sans-serif;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .analytics-dashboard {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background: var(--card-background);
+            border-radius: 15px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6);
+            transition: transform 0.3s, background 0.3s;
+        }
+
+        .analytics-dashboard:hover {
+            transform: translateY(-5px);
+        }
+
+        .dashboard-title {
+            font-size: 3em;
+            color: var(--primary-color);
+            margin-bottom: 1.5rem;
+            text-align: center;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .analytics-section {
+            background: var(--card-background);
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s;
+        }
+
+        .analytics-section:hover {
+            transform: scale(1.02);
+        }
+
+        .analytics-section h2 {
+            font-size: 1.8em;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 0.5rem;
+        }
+
+        .summary-list {
+            list-style: none;
+            padding: 0;
+            font-size: 1.2em;
+        }
+
+        .summary-list li {
+            padding: 0.8rem 0;
+            border-bottom: 1px solid var(--secondary-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .stat-number {
+            font-weight: bold;
+            color: var(--primary-color);
+            transition: transform 0.3s;
+        }
+
+        .stat-number:hover {
+            transform: scale(1.1);
+        }
+
+        .table {
+            color: var(--text-color);
+        }
+
+        .table thead {
+            background: var(--primary-color);
+            color: #fff;
+        }
+
+        .table-hover tbody tr:hover {
+            background-color: rgba(0, 123, 255, 0.1);
+        }
+
+        .no-data {
+            color: var(--secondary-color);
+            font-style: italic;
+            text-align: center;
+        }
+
+        canvas {
+            margin: 1.5rem 0;
+        }
+
+        .icon-stat {
+            font-size: 2.5em;
+            margin-right: 1rem;
+            color: var(--primary-color);
+        }
+
+        @media (max-width: 768px) {
+            .analytics-dashboard {
+                padding: 1rem;
+            }
+
+            .dashboard-title {
+                font-size: 2em;
+            }
+
+            .analytics-section {
+                padding: 1rem;
+            }
+        }
+    </style>
 </head>
+<body>
+    <div class="analytics-dashboard">
+        <h1 class="dashboard-title">
+            <i class="fas fa-chart-line me-3"></i>Analytics Dashboard
+        </h1>
 
-{% block content %}
-<div class="analytics-dashboard">
-    <h1 class="dashboard-title">Analytics Dashboard</h1>
+        <div class="analytics-section summary-section">
+            <h2><i class="fas fa-info-circle me-2"></i>Summary</h2>
+            <ul class="summary-list">
+                <li>
+                    <span><i class="fas fa-poll icon-stat"></i>Total Polls</span>
+                    <span class="stat-number">{{ total_polls }}</span>
+                </li>
+                <li>
+                    <span><i class="fas fa-vote-yea icon-stat"></i>Total Votes</span>
+                    <span class="stat-number">{{ total_votes }}</span>
+                </li>
+            </ul>
+        </div>
 
-    <div class="analytics-section summary-section">
-        <h2>Summary</h2>
-        <ul class="summary-list">
-            <li><strong>Total Polls:</strong> <span class="stat-number">{{ total_polls }}</span></li>
-            <li><strong>Total Votes:</strong> <span class="stat-number">{{ total_votes }}</span></li>
-        </ul>
+        <div class="analytics-section">
+            <h2><i class="fas fa-chart-bar me-2"></i>Top Polls by Votes</h2>
+            <canvas id="pollsChart" width="400" height="200"></canvas>
+            {% if top_polls %}
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Poll Title</th>
+                                <th>Number of Votes</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for poll in top_polls %}
+                            <tr>
+                                <td>{{ poll.title }}</td>
+                                <td>{{ poll.vote_count }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <p class="no-data">No polls available.</p>
+            {% endif %}
+        </div>
+
+        <div class="analytics-section">
+            <h2><i class="fas fa-users me-2"></i>Top Voters</h2>
+            <canvas id="votersChart" width="400" height="200"></canvas>
+            {% if top_voters %}
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>User</th>
+                                <th>Number of Votes Cast</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for voter in top_voters %}
+                            <tr>
+                                <td>{{ voter.username }}</td>
+                                <td>{{ voter.vote_count }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <p class="no-data">No voters available.</p>
+            {% endif %}
+        </div>
     </div>
 
-    <div class="analytics-section">
-        <h2>Top Polls by Votes</h2>
-        <canvas id="pollsChart" width="400" height="200"></canvas>
-        {% if top_polls %}
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>Poll Title</th>
-                        <th>Number of Votes</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for poll in top_polls %}
-                    <tr>
-                        <td>{{ poll.title }}</td>
-                        <td>{{ poll.vote_count }}</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        {% else %}
-            <p class="no-data">No polls available.</p>
-        {% endif %}
-    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const pollsCtx = document.getElementById('pollsChart').getContext('2d');
+            const votersCtx = document.getElementById('votersChart').getContext('2d');
 
-    <div class="analytics-section">
-        <h2>Top Voters</h2>
-        <canvas id="votersChart" width="400" height="200"></canvas>
-        {% if top_voters %}
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>User</th>
-                        <th>Number of Votes Cast</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for voter in top_voters %}
-                    <tr>
-                        <td>{{ voter.username }}</td>
-                        <td>{{ voter.vote_count }}</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        {% else %}
-            <p class="no-data">No voters available.</p>
-        {% endif %}
-    </div>
-</div>
-{% endblock %}
-
-{% block styles %}
-<style>
-    /* General Styles */
-    body {
-        background-color: #1c1f26;
-        color: #e0e6ed;
-        font-family: 'Roboto', sans-serif;
-        transition: background-color 0.3s, color 0.3s;
-    }
-
-    a {
-        color: #007bff;
-        transition: color 0.3s;
-    }
-
-    a:hover {
-        color: #0056b3;
-    }
-
-    .analytics-dashboard {
-        max-width: 900px;
-        margin: 0 auto;
-        padding: 20px;
-        background: #2b2f3a;
-        border-radius: 8px;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6);
-        transition: transform 0.3s, background 0.3s;
-    }
-
-    .analytics-dashboard:hover {
-        transform: scale(1.02);
-        background: #343a46;
-    }
-
-    .dashboard-title {
-        font-size: 2.4em;
-        color: #ffffff;
-        margin-bottom: 20px;
-        text-align: center;
-        transition: color 0.3s, transform 0.3s;
-    }
-
-    .dashboard-title:hover {
-        color: #007bff;
-        transform: translateY(-5px);
-    }
-
-    .analytics-section {
-        background: #353a47;
-        border-radius: 8px;
-        padding: 20px;
-        margin-bottom: 20px;
-        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.6);
-        transition: transform 0.3s, background 0.3s;
-    }
-
-    .analytics-section:hover {
-        transform: scale(1.01);
-        background: #3d4354;
-    }
-
-    .analytics-section h2 {
-        font-size: 1.8em;
-        color: #ffffff;
-        margin-bottom: 15px;
-        border-bottom: 2px solid #007bff;
-        padding-bottom: 5px;
-        transition: color 0.3s;
-    }
-
-    .analytics-section h2:hover {
-        color: #007bff;
-    }
-
-    .summary-list {
-        list-style: none;
-        padding: 0;
-        font-size: 1.2em;
-        color: #e0e6ed;
-    }
-
-    .summary-list li {
-        padding: 10px 0;
-        border-bottom: 1px solid #555;
-    }
-
-    .stat-number {
-        font-weight: bold;
-        color: #007bff;
-        transition: color 0.3s, transform 0.3s;
-    }
-
-    .stat-number:hover {
-        color: #66ccff;
-        transform: scale(1.1);
-    }
-
-    .table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-top: 15px;
-    }
-
-    .table thead {
-        background: #007bff;
-        color: #fff;
-    }
-
-    .table th, .table td {
-        padding: 10px;
-        text-align: left;
-        transition: background 0.3s, color 0.3s;
-    }
-
-    .table tr:nth-child(even) {
-        background: #2b2f3a;
-    }
-
-    .table tr:hover {
-        background: #353a47;
-    }
-
-    .table th {
-        font-weight: bold;
-    }
-
-    .no-data {
-        color: #aaa;
-        font-style: italic;
-    }
-
-    canvas {
-        margin: 20px 0;
-    }
-</style>
-{% endblock %}
-
-{% block scripts %}
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script>
-document.addEventListener('DOMContentLoaded', function () {
-    const pollsCtx = document.getElementById('pollsChart').getContext('2d');
-    const votersCtx = document.getElementById('votersChart').getContext('2d');
-
-    const pollsChart = new Chart(pollsCtx, {
-        type: 'bar',
-        data: {
-            labels: [{% for poll in top_polls %}'{{ poll.title }}'{% if not forloop.last %}, {% endif %}{% endfor %}],
-            datasets: [{
-                label: 'Number of Votes',
-                data: [{% for poll in top_polls %}{{ poll.vote_count }}{% if not forloop.last %}, {% endif %}{% endfor %}],
-                backgroundColor: 'rgba(0, 123, 255, 0.2)',
-                borderColor: 'rgba(0, 123, 255, 1)',
-                borderWidth: 1
-            }]
-        },
-        options: {
-            responsive: true,
-            scales: {
-                y: {
-                    beginAtZero: true,
-                    ticks: {
-                        color: '#e0e6ed',
-                    },
-                    grid: {
-                        color: '#555',
-                    }
+            const pollsChart = new Chart(pollsCtx, {
+                type: 'bar',
+                data: {
+                    labels: [{% for poll in top_polls %}'{{ poll.title }}'{% if not forloop.last %}, {% endif %}{% endfor %}],
+                    datasets: [{
+                        label: 'Number of Votes',
+                        data: [{% for poll in top_polls %}{{ poll.vote_count }}{% if not forloop.last %}, {% endif %}{% endfor %}],
+                        backgroundColor: 'rgba(0, 123, 255, 0.6)',
+                        borderColor: 'rgba(0, 123, 255, 1)',
+                        borderWidth: 1
+                    }]
                 },
-                x: {
-                    ticks: {
-                        color: '#e0e6ed',
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                color: '#e0e6ed',
+                            },
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.1)',
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                color: '#e0e6ed',
+                            },
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.1)',
+                            }
+                        }
                     },
-                    grid: {
-                        color: '#555',
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: '#e0e6ed'
+                            }
+                        }
                     }
                 }
-            },
-            plugins: {
-                legend: {
-                    labels: {
-                        color: '#e0e6ed'
-                    }
-                }
-            }
-        }
-    });
+            });
 
-    const votersChart = new Chart(votersCtx, {
-        type: 'pie',
-        data: {
-            labels: [{% for voter in top_voters %}'{{ voter.username }}'{% if not forloop.last %}, {% endif %}{% endfor %}],
-            datasets: [{
-                label: 'Number of Votes Cast',
-                data: [{% for voter in top_voters %}{{ voter.vote_count }}{% if not forloop.last %}, {% endif %}{% endfor %}],
-                backgroundColor: [
-                    'rgba(255, 99, 132, 0.2)',
-                    'rgba(54, 162, 235, 0.2)',
-                    'rgba(255, 206, 86, 0.2)',
-                    'rgba(75, 192, 192, 0.2)',
-                    'rgba(153, 102, 255, 0.2)',
-                    'rgba(255, 159, 64, 0.2)'
-                ],
-                borderColor: [
-                    'rgba(255, 99, 132, 1)',
-                    'rgba(54, 162, 235, 1)',
-                    'rgba(255, 206, 86, 1)',
-                    'rgba(75, 192, 192, 1)',
-                    'rgba(153, 102, 255, 1)',
-                    'rgba(255, 159, 64, 1)'
-                ],
-                borderWidth: 1
-            }]
-        },
-        options: {
-            responsive: true,
-            plugins: {
-                legend: {
-                    labels: {
-                        color: '#e0e6ed'
+            const votersChart = new Chart(votersCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: [{% for voter in top_voters %}'{{ voter.username }}'{% if not forloop.last %}, {% endif %}{% endfor %}],
+                    datasets: [{
+                        label: 'Number of Votes Cast',
+                        data: [{% for voter in top_voters %}{{ voter.vote_count }}{% if not forloop.last %}, {% endif %}{% endfor %}],
+                        backgroundColor: [
+                            'rgba(255, 99, 132, 0.8)',
+                            'rgba(54, 162, 235, 0.8)',
+                            'rgba(255, 206, 86, 0.8)',
+                            'rgba(75, 192, 192, 0.8)',
+                            'rgba(153, 102, 255, 0.8)',
+                            'rgba(255, 159, 64, 0.8)'
+                        ],
+                        borderColor: [
+                            'rgba(255, 99, 132, 1)',
+                            'rgba(54, 162, 235, 1)',
+                            'rgba(255, 206, 86, 1)',
+                            'rgba(75, 192, 192, 1)',
+                            'rgba(153, 102, 255, 1)',
+                            'rgba(255, 159, 64, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'right',
+                            labels: {
+                                color: '#e0e6ed'
+                            }
+                        }
                     }
                 }
-            }
-        }
-    });
-});
-</script>
-{% endblock %}
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.utils import timezone
 
 class Poll(models.Model):
     title = models.CharField(max_length=200)
@@ -24,6 +25,7 @@ class Vote(models.Model):
     poll = models.ForeignKey(Poll, related_name='votes', on_delete=models.CASCADE)
     option = models.ForeignKey(PollOption, related_name='votes', on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
+    timestamp = models.DateTimeField(default=timezone.now)  # New timestamp field
 
     class Meta:
         unique_together = ('poll', 'user')

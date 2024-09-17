@@ -4,6 +4,8 @@ from .forms import PollForm, VoteForm
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.db.models import Count
 from Authentication.models import User
+from django.db.models.functions import TruncDate
+
 
 def poll_visualizations_view(request):
     polls = Poll.objects.all()
@@ -120,21 +122,45 @@ def poll_search(request):
 def user_dashboard_view(request):
     user = request.user
     polls = Poll.objects.filter(creator=user)
-    poll_data = []
+    
+    # Total Polls and Votes
+    total_polls = polls.count()
+    total_votes = Vote.objects.filter(poll__creator=user).count()
 
+    poll_data = []
     for poll in polls:
         options = poll.options.all()
         labels = [option.option_text for option in options]
         data = [option.votes.count() for option in options]
-        total_votes = sum(data)  
+        total_votes_for_poll = sum(data)  # Sum votes for this poll
+        vote_percentage = (total_votes_for_poll / total_votes * 100) if total_votes > 0 else 0
 
         poll_data.append({
             'poll': poll,
             'options': options,
             'labels': labels,
             'data': data,
-            'total_votes': total_votes,
+            'total_votes': total_votes_for_poll,
+            'vote_percentage': vote_percentage,
         })
 
-    return render(request, 'polls/user_dashboard.html', {'poll_data': poll_data})
+    # Votes over time
+    votes_over_time = (Vote.objects
+                        .filter(poll__creator=user)
+                        .annotate(date=TruncDate('timestamp'))  # Assuming you have a 'timestamp' field in Vote model
+                        .values('date')
+                        .annotate(vote_count=Count('id'))
+                        .order_by('date'))
 
+    vote_time_labels = [v['date'].strftime('%Y-%m-%d') for v in votes_over_time]
+    vote_time_data = [v['vote_count'] for v in votes_over_time]
+
+    context = {
+        'poll_data': poll_data,
+        'total_polls': total_polls,
+        'total_votes': total_votes,
+        'vote_time_labels': vote_time_labels,
+        'vote_time_data': vote_time_data,
+    }
+
+    return render(request, 'polls/user_dashboard.html', context)

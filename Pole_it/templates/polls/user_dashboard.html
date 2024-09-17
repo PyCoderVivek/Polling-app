@@ -4,42 +4,59 @@
 
 {% block content %}
     <div class="container mt-5">
-        <h2 class="recent-polls-heading">Your Polls</h2>
-        <div class="row">
-            {% for data in poll_data %}
-                <div class="col-md-4 mb-4">
-                    <a href="{% url 'poll_results' data.poll.id %}" class="card-link">
-                        <div class="card poll-card">
-                            <div class="card-header">
-                                <h5 class="card-title">{{ data.poll.title }}</h5>
-                            </div>
-                            <div class="card-body">
-                                <h6 class="card-subtitle mb-2 text-muted">{{ data.poll.question }}</h6>
-                                
-                                <!-- Poll Options -->
-                                <ul class="list-group mb-3">
-                                    {% for option in data.options %}
-                                        <li class="list-group-item">
-                                            {{ option.option_text }}: {{ option.votes.count }} votes
-                                        </li>
-                                    {% endfor %}
-                                </ul>
-                                
-                                <!-- Display Total Votes -->
-                                <p class="text-muted">Total Votes: {{ data.total_votes }}</p>
-                            </div>
-                        </div>
-                    </a>
+        <h1 class="mb-4">My Polls Dashboard</h1>
+        <div class="row g-4">
+            <!-- Dashboard Cards -->
+            <div class="col-md-6 col-lg-3">
+                <div class="card dashboard-card">
+                    <div class="card-body">
+                        <h5 class="card-title">Total Polls</h5>
+                        <p class="card-text display-4">{{ total_polls }}</p>
+                    </div>
                 </div>
-            {% empty %}
-                <p>No polls available or results to display.</p>
-            {% endfor %}
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="card dashboard-card">
+                    <div class="card-body">
+                        <h5 class="card-title">Total Votes</h5>
+                        <p class="card-text display-4">{{ total_votes }}</p>
+                    </div>
+                </div>
+            </div>
+            <!-- Poll List -->
+            <div class="col-12">
+                <div class="card dashboard-card">
+                    <div class="card-body">
+                        <h5 class="card-title">My Polls</h5>
+                        <div class="poll-list">
+                            {% for data in poll_data %}
+                                <div class="poll-item">
+                                    <a href="{% url 'poll_results' data.poll.id %}" class="text-decoration-none">
+                                        <h6>{{ data.poll.title }}</h6>
+                                    </a>
+                                    <p class="mb-1">Total Votes: {{ data.total_votes }}</p>
+                                    <div class="progress">
+                                        <div class="progress-bar" role="progressbar" 
+                                            style="width: {{ data.vote_percentage }}%;" 
+                                            aria-valuenow="{{ data.vote_percentage }}" 
+                                            aria-valuemin="0" aria-valuemax="100">
+                                            {{ data.vote_percentage }}%
+                                        </div>
+                                    </div>
+                                </div>
+                            {% empty %}
+                                <p>No polls available or results to display.</p>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
     <!-- Floating Plus Button -->
     <a href="{% url 'create_poll' %}" class="btn btn-floating" id="floating-btn">
-        +
         <i class="bi bi-plus"></i>
     </a>
 {% endblock %}
+
