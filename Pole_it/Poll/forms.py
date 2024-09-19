@@ -1,7 +1,7 @@
 # Poll/forms.py
 
 from django import forms
-from .models import Poll, PollOption
+from .models import Poll
 
 class PollForm(forms.ModelForm):
     class Meta:
