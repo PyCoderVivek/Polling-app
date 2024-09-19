@@ -10,12 +10,6 @@
                 <div class="card-header bg-primary text-white text-center rounded-top">
                     <h2 class="mb-0" style="font-family: 'Nunito', sans-serif;">{{ poll.title }}</h2>
                 </div>
-                <div class="card-body">
-                    {% if poll.image %}
-                        <div class="text-center mb-4">
-                            <img src="{{ poll.image.url }}" alt="Poll Image" class="img-fluid rounded" style="max-width: 100%; height: auto; max-height: 300px; object-fit: cover;">
-                        </div>
-                    {% endif %}
                     {% if user.is_authenticated and user_has_voted %}
                         <a href="{% url 'poll_results' poll.id %}" class="btn btn-secondary w-100 mt-3">View Results</a>
                     {% else %}

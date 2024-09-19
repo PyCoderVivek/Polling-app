@@ -29,7 +29,7 @@ def poll_visualizations_view(request):
 @login_required
 def create_poll_view(request):
     if request.method == "POST":
-        poll_form = PollForm(request.POST, request.FILES)
+        poll_form = PollForm(request.POST)
         if poll_form.is_valid():
             poll = poll_form.save(commit=False)
             poll.creator = request.user  # Associate poll with the user

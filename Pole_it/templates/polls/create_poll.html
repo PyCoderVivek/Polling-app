@@ -21,10 +21,6 @@
               <label for="poll-question" class="form-label">Poll Question</label>
               <textarea class="form-control" id="poll-question" name="question" rows="4" placeholder="Enter the poll question" required></textarea>
             </div>
-            <div class="mb-4">
-              <label for="poll-image" class="form-label">Upload an Image (optional)</label>
-              <input type="file" class="form-control" id="poll-image" name="poll_image" accept="image/*">
-            </div>
             <div id="options-container" class="mb-4">
               <label class="form-label">Poll Options</label>
               <div class="option-item mb-2">
@@ -52,12 +48,6 @@
         </div>
       </div>
     </div>
-    <div id="photo-preview" class="col-lg-4 col-md-10 mt-4 mt-lg-0">
-      <div class="card shadow-lg border-0 animate-photo-card d-none">
-        <div class="card-body p-4 text-center">
-          <h5 class="card-title mb-3">Poll Image Preview</h5>
-          <img id="uploaded-photo" src="#" alt="Uploaded Image" class="img-fluid rounded">
-        </div>
       </div>
     </div>
   </div>
@@ -174,57 +164,4 @@
   }
 </style>
 
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-  const optionsContainer = document.getElementById('options-container');
-  const addOptionBtn = document.getElementById('add-option');
-  const photoPreview = document.getElementById('photo-preview');
-  const uploadedPhoto = document.getElementById('uploaded-photo');
-  const pollImageInput = document.getElementById('poll-image');
-
-  function updateOptionNumbers() {
-    optionsContainer.querySelectorAll('.option-item').forEach((item, index) => {
-      item.querySelector('.input-group-text i').className = `bi bi-${index + 1}-circle`;
-      item.querySelector('input').placeholder = `Option ${index + 1}`;
-    });
-  }
-
-  addOptionBtn.addEventListener('click', function() {
-    const optionCount = optionsContainer.querySelectorAll('.option-item').length;
-    const newOption = document.createElement('div');
-    newOption.className = 'option-item mb-2';
-    newOption.innerHTML = `
-      <div class="input-group">
-        <span class="input-group-text"><i class="bi bi-${optionCount + 1}-circle"></i></span>
-        <input type="text" class="form-control" name="options" placeholder="Option ${optionCount + 1}" required>
-        <button type="button" class="btn btn-outline-danger remove-option"><i class="bi bi-trash"></i></button>
-      </div>
-    `;
-    optionsContainer.appendChild(newOption);
-    newOption.querySelector('input').focus();
-  });
-
-  optionsContainer.addEventListener('click', function(e) {
-    if (e.target.classList.contains('remove-option') || e.target.closest('.remove-option')) {
-      e.target.closest('.option-item').remove();
-      updateOptionNumbers();
-    }
-  });
-
-  pollImageInput.addEventListener('change', function(e) {
-    const file = e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = function(e) {
-        uploadedPhoto.src = e.target.result;
-        photoPreview.querySelector('.card').classList.remove('d-none');
-        setTimeout(function() {
-          photoPreview.querySelector('.card').classList.add('photo-card-visible');
-        }, 50);
-      };
-      reader.readAsDataURL(file);
-    }
-  });
-});
-</script>
 {% endblock %}
