@@ -1,7 +1,7 @@
 
 # 📊 Polling Web Application - *Poll Karo - A Polling Web App*
 
-Welcome to **Pole It**, an intuitive and dynamic web application designed for creating, customizing, and analyzing polls with ease. Whether you're conducting surveys, collecting feedback, or simply gathering opinions, Pole It provides all the tools you need in one seamless platform.
+Welcome to **Poll Karo**, an intuitive and dynamic web application designed for creating, customizing, and analyzing polls with ease. Whether you're conducting surveys, collecting feedback, or simply gathering opinions, Pole It provides all the tools you need in one seamless platform.
 
 ## 🚀 Features
 
