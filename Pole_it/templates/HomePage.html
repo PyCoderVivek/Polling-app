@@ -1,11 +1,11 @@
 {% extends "base.html" %}
 
-{% block title %}Welcome to Poll-Karo{% endblock %}
+{% block title %}Welcome to Poll-Karo - Your Opinion Matters{% endblock %}
 
 {% block content %}
 <style>
     .hero-section {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
         color: white;
         padding: 100px 0;
         margin-bottom: 50px;
@@ -16,58 +16,69 @@
         font-size: 3.5rem;
         font-weight: 700;
         margin-bottom: 20px;
+        text-transform: uppercase;
+        letter-spacing: 2px;
     }
 
     .hero-subtitle {
         font-size: 1.5rem;
         margin-bottom: 30px;
+        font-weight: 300;
     }
 
     .recent-polls-heading {
         font-size: 2.5rem;
         font-weight: 600;
         margin-bottom: 30px;
-        color: #333;
+        color: var(--text-color);
         text-align: center;
+        text-transform: uppercase;
+        letter-spacing: 1px;
     }
 
     .poll-card {
         height: 100%;
         transition: all 0.3s ease;
         border: none;
-        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        border-radius: 15px;
+        overflow: hidden;
     }
 
     .poll-card:hover {
         transform: translateY(-10px);
-        box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
     }
 
     .card-header {
-        background-color: #f8f9fa;
+        background-color: var(--primary-color);
         border-bottom: none;
+        color: white;
+        padding: 15px 20px;
     }
 
     .card-title {
-        color: #4a4a4a;
+        color: white;
         font-weight: 600;
+        margin-bottom: 0;
     }
 
     .card-subtitle {
         font-size: 0.9rem;
+        color: var(--text-color);
     }
 
     .list-group-item {
         border: none;
         padding: 10px 15px;
-        background-color: #f8f9fa;
+        background-color: var(--card-bg);
         margin-bottom: 5px;
         border-radius: 5px;
         transition: background-color 0.3s ease;
     }
 
     .list-group-item:hover {
-        background-color: #e9ecef;
+        background-color: var(--background-color);
     }
 
     .btn-floating {
@@ -77,16 +88,43 @@
         width: 60px;
         height: 60px;
         border-radius: 50%;
-        text-align: center;
+        background-color: var(--accent-color);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
         font-size: 24px;
-        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
         transition: all 0.3s ease;
         z-index: 1000;
     }
 
     .btn-floating:hover {
-        transform: scale(1.1);
-        box-shadow: 0 6px 12px rgba(0,0,0,0.2);
+        background-color: var(--primary-color);
+        transform: scale(1.1) rotate(90deg);
+    }
+
+    .badge {
+        background-color: var(--accent-color);
+        color: white;
+        font-weight: 500;
+        padding: 5px 10px;
+    }
+
+    .card-body {
+        padding: 20px;
+    }
+
+    .card-footer {
+        background-color: var(--card-bg);
+        border-top: 1px solid rgba(0,0,0,0.1);
+        padding: 15px 20px;
+    }
+
+    .card-footer p {
+        margin-bottom: 0;
+        font-size: 0.9rem;
+        color: var(--text-color);
     }
 
     @media (max-width: 768px) {
@@ -100,15 +138,15 @@
     }
 </style>
 
-<div class="hero-section">
+<div class="hero-section animate__animated animate__fadeIn">
     <div class="container">
-        <h1 class="hero-title">Welcome to Poll-Karo</h1>
-        <p class="hero-subtitle">Create, share, and analyze polls with ease</p>
-        <a href="{% url 'create_poll' %}" class="btn btn-light btn-lg">Create Your First Poll</a>
+        <h1 class="hero-title animate__animated animate__fadeInDown">Welcome to Poll-Karo</h1>
+        <p class="hero-subtitle animate__animated animate__fadeInUp animate__delay-1s">Create, share, and analyze polls with ease</p>
+        <a href="{% url 'create_poll' %}" class="btn btn-light btn-lg animate__animated animate__fadeInUp animate__delay-2s">Create Your First Poll</a>
     </div>
 </div>
 
-<div class="container">
+<div class="container animate__animated animate__fadeIn animate__delay-1s">
     <h2 class="recent-polls-heading">Recent Polls</h2>
     <div class="row" id="pollGrid">
         {% for result in poll_results %}
@@ -119,17 +157,19 @@
                             <h5 class="card-title">{{ result.poll.title }}</h5>
                         </div>
                         <div class="card-body">
-                            <h6 class="card-subtitle mb-2 text-muted">{{ result.poll.question }}</h6>
+                            <h6 class="card-subtitle mb-2">{{ result.poll.question }}</h6>
                             <ul class="list-group mt-3">
                                 {% for option in result.poll.options.all %}
                                     <li class="list-group-item d-flex justify-content-between align-items-center">
                                         {{ option.option_text }}
-                                        <span class="badge bg-primary rounded-pill">{{ option.votes.count }}</span>
+                                        <span class="badge rounded-pill">{{ option.votes.count }}</span>
                                     </li>
                                 {% endfor %}
                             </ul>
-                            <p class="mb-1 mt-2"><strong><i class="bi bi-person"></i></strong> {{ result.poll.creator.username }}</p>
-                            <p class="mb-3 mt-2"><strong><i class="bi bi-bar-chart"></i></strong> {{ result.total_votes }}</p>
+                        </div>
+                        <div class="card-footer">
+                            <p><i class="fas fa-user me-2"></i>{{ result.poll.creator.username }}</p>
+                            <p><i class="fas fa-chart-bar me-2"></i>{{ result.total_votes }} votes</p>
                         </div>
                     </div>
                 </a>
@@ -143,10 +183,11 @@
     </div>
 </div>
 
-<a href="{% url 'create_poll' %}" class="btn btn-primary btn-floating" id="createPollBtn">
+<a href="{% url 'create_poll' %}" class="btn btn-floating" id="createPollBtn">
     <i class="fas fa-plus"></i>
 </a>
 
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
 <script src="https://unpkg.com/masonry-layout@4/dist/masonry.pkgd.min.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {

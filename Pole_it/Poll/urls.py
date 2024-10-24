@@ -3,6 +3,7 @@
 from django.urls import path
 from .views import *
 from django.conf.urls.static import static
+from django.conf import settings
 
 urlpatterns = [
     path('create/', create_poll_view, name='create_poll'),
@@ -13,4 +14,4 @@ urlpatterns = [
     path('analytics/', analytics_dashboard_view, name='analytics_dashboard'), 
     path('polls/search/', poll_search, name='poll_search'),  
     path('dashboard/', user_dashboard_view, name='user_dashboard'),
-]
+]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

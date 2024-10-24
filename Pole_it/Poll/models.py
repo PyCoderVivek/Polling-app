@@ -5,7 +5,8 @@ from django.utils import timezone
 class Poll(models.Model):
     title = models.CharField(max_length=200)
     question = models.TextField()
-    creator = models.ForeignKey(User, on_delete=models.CASCADE, related_name='created_polls')  # Link to user
+    creator = models.ForeignKey(User, on_delete=models.CASCADE, related_name='created_polls')
+    image = models.ImageField(upload_to='poll_images/', null=True, blank=True)  # New field
 
     def __str__(self):
         return self.title

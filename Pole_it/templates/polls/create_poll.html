@@ -21,6 +21,11 @@
               <label for="poll-question" class="form-label">Poll Question</label>
               <textarea class="form-control" id="poll-question" name="question" rows="4" placeholder="Enter the poll question" required></textarea>
             </div>
+            <div class="mb-4">
+              <label for="poll-image" class="form-label">Poll Image (Optional)</label>
+              <input type="file" class="form-control" id="poll-image" name="image">
+              <small class="form-text text-muted">Upload an image to represent your poll (optional).</small>
+            </div>
             <div id="options-container" class="mb-4">
               <label class="form-label">Poll Options</label>
               <div class="option-item mb-2">
@@ -46,8 +51,6 @@
             <button type="submit" class="btn btn-primary btn-lg w-100 animate-submit">Create Poll</button>
           </form>
         </div>
-      </div>
-    </div>
       </div>
     </div>
   </div>
@@ -135,33 +138,33 @@
     background-color: var(--primary-color);
     color: white;
   }
-
-  .animate-photo-card {
-    transition: all 0.4s ease;
-  }
-
-  .photo-card-visible {
-    opacity: 1;
-    transform: translateY(0);
-  }
-
-  .photo-card-hidden {
-    opacity: 0;
-    transform: translateY(-15px);
-  }
-
-  #uploaded-photo {
-    max-height: 300px;
-    object-fit: cover;
-    border-radius: 10px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-  }
-
-  @media (max-width: 992px) {
-    #form-card, #photo-preview {
-      width: 100%;
-    }
-  }
 </style>
+
+<script>
+  // JavaScript for adding and removing poll options
+  document.addEventListener('DOMContentLoaded', function() {
+    const optionsContainer = document.getElementById('options-container');
+    const addOptionBtn = document.getElementById('add-option');
+
+    addOptionBtn.addEventListener('click', function() {
+      const optionCount = optionsContainer.getElementsByClassName('option-item').length + 1;
+      const newOption = document.createElement('div');
+      newOption.className = 'option-item mb-2';
+      newOption.innerHTML = `
+        <div class="input-group">
+          <span class="input-group-text"><i class="bi bi-${optionCount}-circle"></i></span>
+          <input type="text" class="form-control" name="options" placeholder="Option ${optionCount}" required>
+          <button type="button" class="btn btn-outline-danger remove-option"><i class="bi bi-trash"></i></button>
+        </div>`;
+      optionsContainer.appendChild(newOption);
+    });
+
+    optionsContainer.addEventListener('click', function(e) {
+      if (e.target.classList.contains('remove-option') || e.target.parentElement.classList.contains('remove-option')) {
+        e.target.closest('.option-item').remove();
+      }
+    });
+  });
+</script>
 
 {% endblock %}

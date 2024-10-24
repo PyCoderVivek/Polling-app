@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Poll-Karo Vote Now !{% endblock %}
+{% block title %}Poll-Karo Vote Now!{% endblock %}
 
 {% block content %}
 <div class="container mt-5">
@@ -10,21 +10,23 @@
                 <div class="card-header bg-primary text-white text-center rounded-top">
                     <h2 class="mb-0" style="font-family: 'Nunito', sans-serif;">{{ poll.title }}</h2>
                 </div>
-                    {% if user.is_authenticated and user_has_voted %}
-                        <a href="{% url 'poll_results' poll.id %}" class="btn btn-secondary w-100 mt-3">View Results</a>
-                    {% else %}
-                        <form method="post" action="{% url 'vote' poll.id %}">
-                            {% csrf_token %}
-                            <p class="text-center" style="font-weight: bold; font-family: 'Nunito', sans-serif;">{{ poll.question }}</p>
-                            <div class="form-group">
-                                {{ form.as_p }}
-                            </div>
-                            <button type="submit" class="btn btn-primary w-100 mt-3" style="border-radius: 25px; padding: 10px 0; background-color: #007bff;">
-                                Submit Vote
-                            </button>
-                        </form>
-                    {% endif %}
-                </div>
+                {% if poll.image %}
+                    <img src="{{ poll.image.url }}" alt="{{ poll.title }}" class="img-fluid rounded" style="max-height: 300px; margin: 20px auto;">
+                {% endif %}
+                {% if user.is_authenticated and user_has_voted %}
+                    <a href="{% url 'poll_results' poll.id %}" class="btn btn-secondary w-100 mt-3">View Results</a>
+                {% else %}
+                    <form method="post" action="{% url 'vote' poll.id %}">
+                        {% csrf_token %}
+                        <p class="text-center" style="font-weight: bold; font-family: 'Nunito', sans-serif;">{{ poll.question }}</p>
+                        <div class="form-group">
+                            {{ form.as_p }}
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100 mt-3" style="border-radius: 25px; padding: 10px 0; background-color: #007bff;">
+                            Submit Vote
+                        </button>
+                    </form>
+                {% endif %}
             </div>
         </div>
     </div>

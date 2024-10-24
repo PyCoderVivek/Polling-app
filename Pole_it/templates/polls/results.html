@@ -3,57 +3,71 @@
 {% block title %}{{ poll.title }} Poll-Karo Results{% endblock %}
 
 {% block content %}
-<div class="container-fluid py-5 bg-gradient">
+<div class="container-fluid py-5 bg-gradient" style="background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);">
     <div class="row justify-content-center">
         <div class="col-lg-8">
-            <h1 class="text-center mb-5 display-3 fw-bold text-white animate-title">{{ poll.title }} Results</h1>
-            <div class="card shadow-lg rounded-lg mb-5 animate-card">
+            <h1 class="text-center mb-5 display-3 fw-bold text-white animate__animated animate__fadeInDown">{{ poll.title }} Results</h1>
+
+            <div class="card shadow-lg rounded-lg mb-5 animate__animated animate__fadeInUp overflow-hidden">
                 <div class="card-header bg-primary text-white p-4 rounded-top">
                     <h2 class="h3 mb-0 fw-bold">{{ poll.question }}</h2>
                 </div>
-                <div class="card-body p-4">
-                    <div class="row mb-4">
-                        <div class="col-md-6">
-                            <div class="d-flex align-items-center mb-2">
-                                <i class="bi bi-person-circle fs-4 me-2 text-primary"></i>
-                                <span class="fw-medium">Creator:</span>
-                                <span class="badge bg-secondary ms-2">{{ poll.creator.username }}</span>
-                            </div>
+                <div class="card-body p-0">
+                    <div class="row g-0">
+                        <div class="col-md-4">
+                            {% if poll.image %}
+                            <img src="{{ poll.image.url }}" alt="{{ poll.title }}" class="img-fluid rounded-start h-100 object-fit-cover">
+                            {% else %}
+                            <img src="https://via.placeholder.com/400x300?text=No+Image" alt="No Image Available" class="img-fluid rounded-start h-100 object-fit-cover">
+                            {% endif %}
                         </div>
-                        <div class="col-md-6">
-                            <div class="d-flex align-items-center">
-                                <i class="bi bi-bar-chart-fill fs-4 me-2 text-success"></i>
-                                <span class="fw-medium">Total Votes:</span>
-                                <span class="badge bg-success ms-2">{{ total_votes }}</span>
+                        <div class="col-md-8">
+                            <div class="card-body">
+                                <div class="row mb-4">
+                                    <div class="col-md-6">
+                                        <div class="d-flex align-items-center mb-2">
+                                            <i class="bi bi-person-circle fs-4 me-2 text-primary"></i>
+                                            <span class="fw-medium">Creator:</span>
+                                            <span class="badge bg-secondary ms-2">{{ poll.creator.username }}</span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="d-flex align-items-center">
+                                            <i class="bi bi-bar-chart-fill fs-4 me-2 text-success"></i>
+                                            <span class="fw-medium">Total Votes:</span>
+                                            <span class="badge bg-success ms-2">{{ total_votes }}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <ul class="list-group list-group-flush animate__animated animate__fadeInUp">
+                                    {% for option, votes in option_votes.items %}
+                                    <li class="list-group-item d-flex justify-content-between align-items-center py-3 option-item">
+                                        <span class="fw-medium">{{ option.option_text }}</span>
+                                        <div class="d-flex align-items-center">
+                                            <div class="progress me-3" style="width: 100px; height: 10px;">
+                                                <div class="progress-bar bg-primary" role="progressbar" style="width: {{ option_percentages.option }}%;" aria-valuenow="{{ option_percentages.option }}" aria-valuemin="0" aria-valuemax="100"></div>
+                                            </div>
+                                            <span class="badge bg-primary rounded-pill me-2">{{ votes }}</span>
+                                            <span class="badge bg-info rounded-pill">{{ option_percentages.option|floatformat:1 }}%</span>
+                                        </div>
+                                    </li>
+                                    {% empty %}
+                                    <li class="list-group-item text-center py-3">No options available.</li>
+                                    {% endfor %}
+                                </ul>
                             </div>
                         </div>
                     </div>
-                    <ul class="list-group list-group-flush animate-list">
-                        {% for option, votes in option_votes.items %}
-                        <li class="list-group-item d-flex justify-content-between align-items-center py-3 option-item">
-                            <span class="fw-medium">{{ option.option_text }}</span>
-                            <div class="d-flex align-items-center">
-                                <div class="progress me-3" style="width: 100px; height: 10px;">
-                                    <div class="progress-bar bg-primary" role="progressbar" style="width: {{ option_percentages.option }}%;" aria-valuenow="{{ option_percentages.option }}" aria-valuemin="0" aria-valuemax="100"></div>
-                                </div>
-                                <span class="badge bg-primary rounded-pill me-2">{{ votes }}</span>
-                                <span class="badge bg-info rounded-pill">{{ option_percentages.option|floatformat:1 }}%</span>
-                            </div>
-                        </li>
-                        {% empty %}
-                        <li class="list-group-item text-center py-3">No options available.</li>
-                        {% endfor %}
-                    </ul>
                 </div>
             </div>
 
             <div class="text-center mb-4">
-                <button id="showPlotButton" class="btn btn-primary btn-lg px-5 py-3 rounded-pill shadow-sm animate-button">
+                <button id="showPlotButton" class="btn btn-primary btn-lg px-5 py-3 rounded-pill shadow-sm animate__animated animate__pulse animate__infinite">
                     <i class="bi bi-bar-chart-fill me-2"></i>Show Results Chart
                 </button>
             </div>
 
-            <div id="plottingCard" class="card shadow-lg rounded-lg mb-5 animate-plot-card" style="display: none;">
+            <div id="plottingCard" class="card shadow-lg rounded-lg mb-5 animate__animated animate__fadeIn" style="display: none;">
                 <div class="card-header bg-secondary text-white p-3 rounded-top">
                     <h3 class="h5 text-center mb-0 fw-bold">Poll Results Visualization</h3>
                 </div>
@@ -76,103 +90,149 @@
     </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+    @keyframes float {
+        0% { transform: translateY(0px); }
+        50% { transform: translateY(-10px); }
+        100% { transform: translateY(0px); }
+    }
+
+    .animate-float {
+        animation: float 3s ease-in-out infinite;
+    }
+
+    .option-item {
+        transition: all 0.3s ease;
+    }
+
+    .option-item:hover {
+        transform: translateX(10px);
+        background-color: #f8f9fa;
+    }
+
+    .progress {
+        overflow: visible;
+    }
+
+    .progress-bar {
+        position: relative;
+        overflow: visible;
+        transition: width 1s ease-in-out;
+    }
+
+    .progress-bar::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        background-image: linear-gradient(
+            -45deg,
+            rgba(255, 255, 255, .2) 25%,
+            transparent 25%,
+            transparent 50%,
+            rgba(255, 255, 255, .2) 50%,
+            rgba(255, 255, 255, .2) 75%,
+            transparent 75%,
+            transparent
+        );
+        z-index: 1;
+        background-size: 50px 50px;
+        animation: move 2s linear infinite;
+        overflow: hidden;
+    }
+
+    @keyframes move {
+        0% { background-position: 0 0; }
+        100% { background-position: 50px 50px; }
+    }
+
+    .object-fit-cover {
+        object-fit: cover;
+    }
+</style>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-    document.getElementById('showPlotButton').addEventListener('click', function () {
+    document.addEventListener('DOMContentLoaded', function() {
+        const showPlotButton = document.getElementById('showPlotButton');
         const chartCard = document.getElementById('plottingCard');
-        chartCard.style.display = 'block'; // Show the chart card
-
         const ctx = document.getElementById('resultsChart').getContext('2d');
-        const chartType = document.getElementById('plotType').value; // Get the selected chart type
+        const plotTypeSelect = document.getElementById('plotType');
+        let resultsChart;
 
-        // Get data from Django template context
-        const labels = {{ labels|safe }};
-        const data = {{ data|safe }};
-
-        // Chart.js instance
-        let resultsChart = new Chart(ctx, {
-            type: chartType,
-            data: {
-                labels: labels,
-                datasets: [{
-                    label: 'Votes',
-                    data: data,
-                    backgroundColor: [
-                        'rgba(54, 162, 235, 0.2)',
-                        'rgba(255, 99, 132, 0.2)',
-                        'rgba(255, 206, 86, 0.2)',
-                        'rgba(75, 192, 192, 0.2)',
-                        'rgba(153, 102, 255, 0.2)',
-                        'rgba(255, 159, 64, 0.2)'
-                    ],
-                    borderColor: [
-                        'rgba(54, 162, 235, 1)',
-                        'rgba(255, 99, 132, 1)',
-                        'rgba(255, 206, 86, 1)',
-                        'rgba(75, 192, 192, 1)',
-                        'rgba(153, 102, 255, 1)',
-                        'rgba(255, 159, 64, 1)'
-                    ],
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                scales: {
-                    y: {
-                        beginAtZero: true
-                    }
-                }
-            }
+        showPlotButton.addEventListener('click', function () {
+            chartCard.style.display = 'block';
+            showPlotButton.classList.remove('animate__infinite');
+            createChart(plotTypeSelect.value);
         });
 
-        // Change chart type when selection changes
-        document.getElementById('plotType').addEventListener('change', function () {
-            const newChartType = this.value;
+        plotTypeSelect.addEventListener('change', function () {
+            createChart(this.value);
+        });
 
-            // Destroy the existing chart before creating a new one
-            resultsChart.destroy();
+        function createChart(chartType) {
+            const labels = {{ labels|safe }};
+            const data = {{ data|safe }};
+            const colors = generateColors(data.length);
+
+            if (resultsChart) {
+                resultsChart.destroy();
+            }
 
             resultsChart = new Chart(ctx, {
-                type: newChartType,
+                type: chartType,
                 data: {
                     labels: labels,
                     datasets: [{
                         label: 'Votes',
                         data: data,
-                        backgroundColor: [
-                            'rgba(54, 162, 235, 0.2)',
-                            'rgba(255, 99, 132, 0.2)',
-                            'rgba(255, 206, 86, 0.2)',
-                            'rgba(75, 192, 192, 0.2)',
-                            'rgba(153, 102, 255, 0.2)',
-                            'rgba(255, 159, 64, 0.2)'
-                        ],
-                        borderColor: [
-                            'rgba(54, 162, 235, 1)',
-                            'rgba(255, 99, 132, 1)',
-                            'rgba(255, 206, 86, 1)',
-                            'rgba(75, 192, 192, 1)',
-                            'rgba(153, 102, 255, 1)',
-                            'rgba(255, 159, 64, 1)'
-                        ],
-                        borderWidth: 1
+                        backgroundColor: colors.map(color => color + '80'),
+                        borderColor: colors,
+                        borderWidth: 2
                     }]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    scales: {
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        },
+                        title: {
+                            display: true,
+                            text: 'Poll Results'
+                        }
+                    },
+                    animation: {
+                        animateScale: true,
+                        animateRotate: true
+                    },
+                    scales: chartType === 'bar' ? {
                         y: {
                             beginAtZero: true
                         }
-                    }
+                    } : undefined
                 }
             });
+        }
+
+        function generateColors(count) {
+            const hueStep = 360 / count;
+            return Array.from({ length: count }, (_, i) => `hsl(${i * hueStep}, 70%, 60%)`);
+        }
+
+        // Animate progress bars on load
+        const progressBars = document.querySelectorAll('.progress-bar');
+        progressBars.forEach(bar => {
+            const width = bar.style.width;
+            bar.style.width = '0%';
+            setTimeout(() => {
+                bar.style.width = width;
+            }, 500);
         });
     });
 </script>
-
 {% endblock %}
