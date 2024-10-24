@@ -9,8 +9,16 @@
             <h1 class="text-center mb-5 display-3 fw-bold text-white animate__animated animate__fadeInDown">{{ poll.title }} Results</h1>
 
             <div class="card shadow-lg rounded-lg mb-5 animate__animated animate__fadeInUp overflow-hidden">
-                <div class="card-header bg-primary text-white p-4 rounded-top">
+                <div class="card-header bg-primary text-white p-4 rounded-top d-flex justify-content-between align-items-center">
                     <h2 class="h3 mb-0 fw-bold">{{ poll.question }}</h2>
+                    {% if request.user == poll.creator or request.user.is_superuser %}
+                        <form action="{% url 'delete_poll' poll.id %}" method="POST" onsubmit="return confirm('Are you sure you want to delete this poll?');">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-danger btn-lg">
+                                <i class="bi bi-trash-fill"></i> Delete Poll
+                            </button>
+                        </form>
+                    {% endif %}
                 </div>
                 <div class="card-body p-0">
                     <div class="row g-0">
@@ -89,6 +97,8 @@
         </div>
     </div>
 </div>
+
+
 
 <style>
     @keyframes float {
@@ -221,18 +231,8 @@
 
         function generateColors(count) {
             const hueStep = 360 / count;
-            return Array.from({ length: count }, (_, i) => `hsl(${i * hueStep}, 70%, 60%)`);
+            return Array.from({ length: count }, (_, i) => `hsl(${i * hueStep}, 100%, 50%)`);
         }
-
-        // Animate progress bars on load
-        const progressBars = document.querySelectorAll('.progress-bar');
-        progressBars.forEach(bar => {
-            const width = bar.style.width;
-            bar.style.width = '0%';
-            setTimeout(() => {
-                bar.style.width = width;
-            }, 500);
-        });
     });
 </script>
 {% endblock %}

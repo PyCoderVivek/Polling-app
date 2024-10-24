@@ -5,6 +5,8 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from django.db.models import Count
 from Authentication.models import User
 from django.db.models.functions import TruncDate
+from django.http import HttpResponseForbidden
+
 
 
 def poll_visualizations_view(request):
@@ -41,6 +43,17 @@ def create_poll_view(request):
     else:
         poll_form = PollForm()
     return render(request, 'polls/create_poll.html', {'poll_form': poll_form})
+
+@login_required
+def delete_poll_view(request, poll_id):
+    poll = get_object_or_404(Poll, id=poll_id)
+
+    # Only allow the creator or an admin to delete the poll
+    if request.user == poll.creator or request.user.is_superuser:
+        poll.delete()
+        return redirect('poll_list')  # Redirect to the list of polls after deletion
+    else:
+        return HttpResponseForbidden("You are not allowed to delete this poll.")
 
 def vote_view(request, poll_id):
     poll = get_object_or_404(Poll, id=poll_id)
