@@ -4,32 +4,32 @@
 
 {% block content %}
 <div class="container mt-5">
-    <h2 class="text-center mb-4">Poll Results</h2>
+    <h2 class="text-center mb-4 display-4 fw-bold text-primary animate__animated animate__fadeInDown">Poll Results</h2>
     {% for poll in poll_data %}
-    <div class="card mb-4 shadow-lg rounded-lg animated-card">
-        <div class="card-header">
+    <div class="card mb-4 shadow-lg rounded-lg animate__animated animate__fadeInUp">
+        <div class="card-header bg-primary text-white">
             <h4 class="text-center mb-1">{{ poll.poll.title }}</h4>
             <p class="text-center mb-0">{{ poll.poll.question }}</p>
         </div>
         <div class="card-body">
             <div class="row">
                 <!-- Bar Chart -->
-                <div class="col-md-4">
-                    <h5 class="text-center">Bar Chart</h5>
+                <div class="col-md-4 mb-4">
+                    <h5 class="text-center fw-bold">Bar Chart</h5>
                     <div class="chart-container">
                         <canvas id="barChart{{ forloop.counter }}" class="chart"></canvas>
                     </div>
                 </div>
                 <!-- Pie Chart -->
-                <div class="col-md-4">
-                    <h5 class="text-center">Pie Chart</h5>
+                <div class="col-md-4 mb-4">
+                    <h5 class="text-center fw-bold">Pie Chart</h5>
                     <div class="chart-container">
                         <canvas id="pieChart{{ forloop.counter }}" class="chart"></canvas>
                     </div>
                 </div>
                 <!-- Doughnut Chart -->
-                <div class="col-md-4">
-                    <h5 class="text-center">Doughnut Chart</h5>
+                <div class="col-md-4 mb-4">
+                    <h5 class="text-center fw-bold">Doughnut Chart</h5>
                     <div class="chart-container">
                         <canvas id="doughnutChart{{ forloop.counter }}" class="chart"></canvas>
                     </div>
@@ -45,10 +45,19 @@
 
 <!-- Include Animation and Styling -->
 <style>
+    :root {
+        --primary-color: #4a90e2;
+        --secondary-color: #f39c12;
+        --accent-color: #e74c3c;
+        --background-color: #f4f7fa;
+        --text-color: #333;
+        --card-bg: #ffffff;
+    }
+
     body {
-        font-family: 'Nunito', sans-serif;
-        background-color: #f0f4f8;
-        color: #333;
+        font-family: 'Poppins', sans-serif;
+        background-color: var(--background-color);
+        color: var(--text-color);
     }
 
     .container {
@@ -57,50 +66,46 @@
 
     h2 {
         font-weight: bold;
-        color: #333;
+        color: var(--primary-color);
     }
 
     .card {
-        background-color: #fff;
-        border-radius: 12px;
+        background-color: var(--card-bg);
+        border-radius: 15px;
         overflow: hidden;
         transition: transform 0.3s ease, box-shadow 0.3s ease;
     }
 
     .card:hover {
-        transform: scale(1.02);
-        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        transform: translateY(-5px);
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
     }
 
     .card-header {
-        background-color: #222;
-        color: #fff;
-        padding: 15px;
-        border-bottom: 1px solid #444;
+        background-color: var(--primary-color);
+        color: white;
+        padding: 20px;
+        border-bottom: none;
     }
 
     .chart-container {
         position: relative;
-        height: 200px;
-        background-color: #f8f9fa;
+        height: 250px;
+        background-color: var(--card-bg);
         border-radius: 8px;
         overflow: hidden;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        transition: background-color 0.3s ease;
+        transition: transform 0.3s ease;
     }
 
     .chart-container:hover {
-        background-color: #e9ecef;
+        transform: scale(1.02);
     }
 
     .chart {
         display: block;
         width: 100% !important;
         height: 100% !important;
-    }
-
-    .animated-card {
-        animation: fadeInUp 0.6s ease-in-out;
     }
 
     @keyframes fadeInUp {
@@ -113,39 +118,87 @@
             transform: translateY(0);
         }
     }
+
+    .btn-floating {
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        background-color: var(--accent-color);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        transition: all 0.3s ease;
+        z-index: 1000;
+    }
+
+    .btn-floating:hover {
+        background-color: var(--primary-color);
+        transform: scale(1.1) rotate(90deg);
+    }
 </style>
 
 <script>
+    const chartColors = [
+        'rgba(54, 162, 235, 0.8)',
+        'rgba(255, 99, 132, 0.8)',
+        'rgba(255, 206, 86, 0.8)',
+        'rgba(75, 192, 192, 0.8)',
+        'rgba(153, 102, 255, 0.8)',
+    ];
+
+    const chartOptions = {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: {
+                display: true,
+                position: 'bottom',
+                labels: {
+                    color: '#333',
+                    font: {
+                        family: "'Poppins', sans-serif",
+                        size: 12
+                    }
+                }
+            },
+            tooltip: {
+                backgroundColor: 'rgba(0, 0, 0, 0.7)',
+                bodyColor: '#fff',
+                titleColor: '#fff',
+                titleFont: {
+                    family: "'Poppins', sans-serif",
+                    size: 14
+                },
+                bodyFont: {
+                    family: "'Poppins', sans-serif",
+                    size: 12
+                }
+            }
+        }
+    };
+
     {% for poll in poll_data %}
     // Bar Chart
-    const barCtx{{ forloop.counter }} = document.getElementById('barChart{{ forloop.counter }}').getContext('2d');
-    new Chart(barCtx{{ forloop.counter }}, {
+    new Chart(document.getElementById('barChart{{ forloop.counter }}').getContext('2d'), {
         type: 'bar',
         data: {
             labels: {{ poll.labels|safe }},
             datasets: [{
                 label: 'Votes',
                 data: {{ poll.data|safe }},
-                backgroundColor: [
-                    'rgba(54, 162, 235, 0.6)',
-                    'rgba(153, 102, 255, 0.6)',
-                    'rgba(255, 159, 64, 0.6)',
-                    'rgba(255, 205, 86, 0.6)',
-                    'rgba(201, 203, 207, 0.6)',
-                ],
-                borderColor: [
-                    'rgba(54, 162, 235, 1)',
-                    'rgba(153, 102, 255, 1)',
-                    'rgba(255, 159, 64, 1)',
-                    'rgba(255, 205, 86, 1)',
-                    'rgba(201, 203, 207, 1)',
-                ],
+                backgroundColor: chartColors,
+                borderColor: chartColors.map(color => color.replace('0.8', '1')),
                 borderWidth: 1
             }]
         },
         options: {
-            responsive: true,
-            maintainAspectRatio: false,
+            ...chartOptions,
             scales: {
                 y: {
                     beginAtZero: true,
@@ -153,7 +206,10 @@
                         color: 'rgba(0, 0, 0, 0.1)'
                     },
                     ticks: {
-                        color: '#333'
+                        color: '#333',
+                        font: {
+                            family: "'Poppins', sans-serif"
+                        }
                     }
                 },
                 x: {
@@ -161,121 +217,52 @@
                         color: 'rgba(0, 0, 0, 0.1)'
                     },
                     ticks: {
-                        color: '#333'
+                        color: '#333',
+                        font: {
+                            family: "'Poppins', sans-serif"
+                        }
                     }
-                }
-            },
-            plugins: {
-                legend: {
-                    display: true,
-                    labels: {
-                        color: '#333'
-                    }
-                },
-                tooltip: {
-                    backgroundColor: 'rgba(0, 0, 0, 0.7)',
-                    bodyColor: '#fff',
-                    titleColor: '#fff'
                 }
             }
         }
     });
 
     // Pie Chart
-    const pieCtx{{ forloop.counter }} = document.getElementById('pieChart{{ forloop.counter }}').getContext('2d');
-    new Chart(pieCtx{{ forloop.counter }}, {
+    new Chart(document.getElementById('pieChart{{ forloop.counter }}').getContext('2d'), {
         type: 'pie',
         data: {
             labels: {{ poll.labels|safe }},
             datasets: [{
                 label: 'Votes',
                 data: {{ poll.data|safe }},
-                backgroundColor: [
-                    'rgba(54, 162, 235, 0.6)',
-                    'rgba(153, 102, 255, 0.6)',
-                    'rgba(255, 159, 64, 0.6)',
-                    'rgba(255, 205, 86, 0.6)',
-                    'rgba(201, 203, 207, 0.6)',
-                ],
-                borderColor: [
-                    'rgba(54, 162, 235, 1)',
-                    'rgba(153, 102, 255, 1)',
-                    'rgba(255, 159, 64, 1)',
-                    'rgba(255, 205, 86, 1)',
-                    'rgba(201, 203, 207, 1)',
-                ],
+                backgroundColor: chartColors,
+                borderColor: chartColors.map(color => color.replace('0.8', '1')),
                 borderWidth: 1
             }]
         },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: {
-                    display: true,
-                    labels: {
-                        color: '#333'
-                    }
-                },
-                tooltip: {
-                    backgroundColor: 'rgba(0, 0, 0, 0.7)',
-                    bodyColor: '#fff',
-                    titleColor: '#fff'
-                }
-            }
-        }
+        options: chartOptions
     });
 
     // Doughnut Chart
-    const doughnutCtx{{ forloop.counter }} = document.getElementById('doughnutChart{{ forloop.counter }}').getContext('2d');
-    new Chart(doughnutCtx{{ forloop.counter }}, {
+    new Chart(document.getElementById('doughnutChart{{ forloop.counter }}').getContext('2d'), {
         type: 'doughnut',
         data: {
             labels: {{ poll.labels|safe }},
             datasets: [{
                 label: 'Votes',
                 data: {{ poll.data|safe }},
-                backgroundColor: [
-                    'rgba(54, 162, 235, 0.6)',
-                    'rgba(153, 102, 255, 0.6)',
-                    'rgba(255, 159, 64, 0.6)',
-                    'rgba(255, 205, 86, 0.6)',
-                    'rgba(201, 203, 207, 0.6)',
-                ],
-                borderColor: [
-                    'rgba(54, 162, 235, 1)',
-                    'rgba(153, 102, 255, 1)',
-                    'rgba(255, 159, 64, 1)',
-                    'rgba(255, 205, 86, 1)',
-                    'rgba(201, 203, 207, 1)',
-                ],
+                backgroundColor: chartColors,
+                borderColor: chartColors.map(color => color.replace('0.8', '1')),
                 borderWidth: 1
             }]
         },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: {
-                    display: true,
-                    labels: {
-                        color: '#333'
-                    }
-                },
-                tooltip: {
-                    backgroundColor: 'rgba(0, 0, 0, 0.7)',
-                    bodyColor: '#fff',
-                    titleColor: '#fff'
-                }
-            }
-        }
+        options: chartOptions
     });
-
     {% endfor %}
 </script>
+
 <!-- Floating Plus Button -->
-<a href="{% url 'create_poll' %}" class="btn btn-floating" id="floating-btn">
-    +
-    <i class="bi bi-plus"></i>
+<a href="{% url 'create_poll' %}" class="btn-floating" id="createPollBtn">
+    <i class="fas fa-plus"></i>
 </a>
 {% endblock %}

@@ -1,62 +1,182 @@
 {% extends "base.html" %}
 
-{% block title %}{{user.username}}'s' Dashboard{% endblock %}
+{% block title %}{{user.username}}'s Dashboard - Poll Karo{% endblock %}
 
 {% block content %}
-    <div class="container mt-5">
-        <h1 class="mb-4">Dashboard</h1>
-        <div class="row g-4">
-            <!-- Dashboard Cards -->
-            <div class="col-md-6 col-lg-3">
-                <div class="card dashboard-card">
-                    <div class="card-body">
-                        <h5 class="card-title">Total Polls</h5>
-                        <p class="card-text display-4">{{ total_polls }}</p>
-                    </div>
+<div class="container mt-5">
+    <h1 class="mb-4 display-4 fw-bold text-primary animate__animated animate__fadeInDown">{{user.username}}'s Dashboard</h1>
+    <div class="row g-4">
+        <!-- Dashboard Cards -->
+        <div class="col-md-6 col-lg-3">
+            <div class="card dashboard-card animate__animated animate__fadeInLeft">
+                <div class="card-body">
+                    <h5 class="card-title">Total Polls</h5>
+                    <p class="card-text display-4">{{ total_polls }}</p>
                 </div>
             </div>
-            <div class="col-md-6 col-lg-3">
-                <div class="card dashboard-card">
-                    <div class="card-body">
-                        <h5 class="card-title">Total Votes</h5>
-                        <p class="card-text display-4">{{ total_votes }}</p>
-                    </div>
+        </div>
+        <div class="col-md-6 col-lg-3">
+            <div class="card dashboard-card animate__animated animate__fadeInRight">
+                <div class="card-body">
+                    <h5 class="card-title">Total Votes</h5>
+                    <p class="card-text display-4">{{ total_votes }}</p>
                 </div>
             </div>
-            <!-- Poll List -->
-            <div class="col-12">
-                <div class="card dashboard-card">
-                    <div class="card-body">
-                        <h5 class="card-title">My Polls</h5>
-                        <div class="poll-list">
-                            {% for data in poll_data %}
-                                <div class="poll-item">
-                                    <a href="{% url 'poll_results' data.poll.id %}" class="text-decoration-none">
-                                        <h6>{{ data.poll.title }}</h6>
-                                    </a>
-                                    <p class="mb-1">Total Votes: {{ data.total_votes }}</p>
-                                    <div class="progress">
-                                        <div class="progress-bar" role="progressbar" 
-                                            style="width: {{ data.vote_percentage }}%;" 
-                                            aria-valuenow="{{ data.vote_percentage }}" 
-                                            aria-valuemin="0" aria-valuemax="100">
-                                            {{ data.vote_percentage }}%
-                                        </div>
+        </div>
+        <!-- Poll List -->
+        <div class="col-12">
+            <div class="card dashboard-card animate__animated animate__fadeInUp">
+                <div class="card-body">
+                    <h5 class="card-title">My Polls</h5>
+                    <div class="poll-list">
+                        {% for data in poll_data %}
+                            <div class="poll-item">
+                                <a href="{% url 'poll_results' data.poll.id %}" class="text-decoration-none">
+                                    <h6>{{ data.poll.title }}</h6>
+                                </a>
+                                <p class="mb-1">Total Votes: {{ data.total_votes }}</p>
+                                <div class="progress">
+                                    <div class="progress-bar" role="progressbar" 
+                                        style="width: {{ data.vote_percentage }}%;" 
+                                        aria-valuenow="{{ data.vote_percentage }}" 
+                                        aria-valuemin="0" aria-valuemax="100">
+                                        {{ data.vote_percentage }}%
                                     </div>
                                 </div>
-                            {% empty %}
-                                <p>No polls available or results to display.</p>
-                            {% endfor %}
-                        </div>
+                            </div>
+                        {% empty %}
+                            <p class="text-muted">No polls available or results to display.</p>
+                        {% endfor %}
                     </div>
                 </div>
             </div>
         </div>
     </div>
+</div>
 
-    <!-- Floating Plus Button -->
-    <a href="{% url 'create_poll' %}" class="btn btn-floating" id="floating-btn">
-        <i class="bi bi-plus"></i>
-    </a>
+<!-- Floating Plus Button -->
+<a href="{% url 'create_poll' %}" class="btn-floating" id="createPollBtn">
+    <i class="fas fa-plus"></i>
+</a>
+
+<style>
+    :root {
+        --primary-color: #4a90e2;
+        --secondary-color: #f39c12;
+        --accent-color: #e74c3c;
+        --background-color: #f4f7fa;
+        --text-color: #333;
+        --card-bg: #ffffff;
+    }
+
+    body {
+        font-family: 'Poppins', sans-serif;
+        background-color: var(--background-color);
+        color: var(--text-color);
+    }
+
+    .dashboard-card {
+        background: var(--card-bg);
+        border: none;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .dashboard-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+    }
+
+    .card-title {
+        color: var(--primary-color);
+        font-weight: 600;
+    }
+
+    .card-text {
+        color: var(--accent-color);
+        font-weight: 700;
+    }
+
+    .poll-item {
+        background-color: var(--background-color);
+        border-radius: 10px;
+        padding: 15px;
+        margin-bottom: 15px;
+        transition: transform 0.3s ease;
+    }
+
+    .poll-item:hover {
+        transform: translateX(10px);
+    }
+
+    .poll-item h6 {
+        color: var(--primary-color);
+        font-weight: 600;
+    }
+
+    .progress {
+        height: 10px;
+        border-radius: 5px;
+        background-color: #e9ecef;
+    }
+
+    .progress-bar {
+        background-color: var(--primary-color);
+        border-radius: 5px;
+    }
+
+    .btn-floating {
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        background-color: var(--accent-color);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        transition: all 0.3s ease;
+        z-index: 1000;
+    }
+
+    .btn-floating:hover {
+        background-color: var(--primary-color);
+        transform: scale(1.1) rotate(90deg);
+    }
+
+    @media (max-width: 768px) {
+        .dashboard-card {
+            margin-bottom: 20px;
+        }
+    }
+</style>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const createPollBtn = document.getElementById('createPollBtn');
+        createPollBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            this.classList.add('animate__animated', 'animate__rubberBand');
+            setTimeout(() => {
+                window.location.href = this.getAttribute('href');
+            }, 500);
+        });
+
+        const pollItems = document.querySelectorAll('.poll-item');
+        pollItems.forEach(item => {
+            item.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateX(10px)';
+            });
+            item.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateX(0)';
+            });
+        });
+    });
+</script>
 {% endblock %}
-

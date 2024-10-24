@@ -1,25 +1,25 @@
 {% extends "base.html" %}
 
-{% block title %}Polls{% endblock %}
+{% block title %}Polls - Poll Karo{% endblock %}
 
 {% block content %}
 <div class="container mt-5">
-    <h1 class="text-center mb-5 display-4 animate-title">Awesome Polls</h1>
+    <h1 class="text-center mb-5 display-4 fw-bold text-primary animate__animated animate__fadeInDown">Awesome Polls</h1>
     <div class="row justify-content-center">
         <div class="col-lg-8">
-            <div id="pollList" class="poll-list">
+            <div id="pollList" class="poll-list animate__animated animate__fadeIn animate__delay-1s">
                 {% for poll in polls %}
-                <div class="poll-item card mb-4 shadow-sm">
+                <div class="poll-item card mb-4 shadow-sm animate__animated animate__fadeInUp" style="animation-delay: {{ forloop.counter|add:"1" }}00ms;">
                     <div class="card-body d-flex justify-content-between align-items-center">
                         <div>
-                            <h2 class="h5 card-title mb-1">{{ poll.title }}</h2>
+                            <h2 class="h5 card-title mb-1 fw-bold">{{ poll.title }}</h2>
                             <p class="card-text text-muted">{{ poll.question }}</p>
                         </div>
                         <a href="{% url 'vote' poll.id %}" class="btn btn-primary btn-vote">Vote Now</a>
                     </div>
                 </div>
                 {% empty %}
-                <div class="alert alert-info text-center" role="alert">
+                <div class="alert alert-info text-center animate__animated animate__fadeIn" role="alert">
                     No polls available at the moment. Check back soon!
                 </div>
                 {% endfor %}
@@ -28,72 +28,117 @@
     </div>
 </div>
 
+<!-- Floating Plus Button -->
+<a href="{% url 'create_poll' %}" class="btn-floating" id="createPollBtn">
+    <i class="fas fa-plus"></i>
+</a>
+
 <style>
+    :root {
+        --primary-color: #4a90e2;
+        --secondary-color: #f39c12;
+        --accent-color: #e74c3c;
+        --background-color: #f4f7fa;
+        --text-color: #333;
+        --card-bg: #ffffff;
+    }
+
     body {
-        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        font-family: 'Poppins', sans-serif;
+        background-color: var(--background-color);
+        color: var(--text-color);
         min-height: 100vh;
     }
 
-    .animate-title {
-        opacity: 0;
-        animation: fadeInUp 1s ease-out forwards;
-    }
-
-    .poll-list {
-        opacity: 0;
-        animation: fadeIn 1s ease-out forwards;
-        animation-delay: 0.5s;
-    }
-
     .poll-item {
+        background-color: var(--card-bg);
+        border: none;
+        border-radius: 15px;
         transition: all 0.3s ease;
-        opacity: 0;
-        transform: translateY(20px);
-    }
-
-    .poll-item.show {
-        opacity: 1;
-        transform: translateY(0);
+        overflow: hidden;
     }
 
     .poll-item:hover {
         transform: translateY(-5px);
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1) !important;
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1) !important;
+    }
+
+    .card-title {
+        color: var(--primary-color);
     }
 
     .btn-vote {
+        background-color: var(--primary-color);
+        border: none;
+        border-radius: 25px;
+        padding: 10px 20px;
+        font-weight: 600;
         transition: all 0.3s ease;
     }
 
     .btn-vote:hover {
+        background-color: var(--accent-color);
         transform: scale(1.05);
     }
 
-    @keyframes fadeInUp {
-        from {
-            opacity: 0;
-            transform: translateY(20px);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
+    .alert-info {
+        background-color: var(--card-bg);
+        border-color: var(--primary-color);
+        color: var(--primary-color);
     }
 
-    @keyframes fadeIn {
-        from { opacity: 0; }
-        to { opacity: 1; }
+    .btn-floating {
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        background-color: var(--accent-color);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        transition: all 0.3s ease;
+        z-index: 1000;
+    }
+
+    .btn-floating:hover {
+        background-color: var(--primary-color);
+        transform: scale(1.1) rotate(90deg);
+    }
+
+    @media (max-width: 768px) {
+        .btn-floating {
+            bottom: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            font-size: 20px;
+        }
     }
 </style>
 
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
 <script>
     document.addEventListener('DOMContentLoaded', function() {
+        const createPollBtn = document.getElementById('createPollBtn');
+        createPollBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            this.classList.add('animate__animated', 'animate__rubberBand');
+            setTimeout(() => {
+                window.location.href = this.getAttribute('href');
+            }, 500);
+        });
+
         const pollItems = document.querySelectorAll('.poll-item');
-        
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
-                    entry.target.classList.add('show');
+                    entry.target.classList.add('animate__fadeInUp');
+                    entry.target.style.opacity = 1;
                 }
             });
         }, {
