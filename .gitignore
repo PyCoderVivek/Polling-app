@@ -18,7 +18,6 @@ db.sqlite3
 .DS_Store
 Thumbs.db
 
-Pole_it/media
 .vscode
 
 Pole_it/staticfiles
