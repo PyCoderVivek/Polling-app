@@ -9,7 +9,6 @@ __pycache__/
 .env
 
 # Django specific files
-db.sqlite3
 
 # Log files
 *.log
@@ -20,4 +19,3 @@ Thumbs.db
 
 .vscode
 
-Pole_it/staticfiles
