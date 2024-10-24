@@ -1,0 +1,1 @@
+web: gunicorn Pole_it.wsgi --log-file -
