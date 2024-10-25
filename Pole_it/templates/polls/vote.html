@@ -1,40 +1,148 @@
 {% extends "base.html" %}
 
-{% block title %}Poll-Karo Vote Now!{% endblock %}
+{% block title %}{{ poll.title }} - Poll-Karo Vote Now!{% endblock %}
 
 {% block content %}
-<div class="container mt-5">
+<div class="container-fluid py-5 bg-gradient" style="background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);">
     <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card shadow-lg rounded-lg" style="background-color: #2e3a4e; color: white;">
-                <div class="card-header bg-primary text-white text-center rounded-top">
-                    <h2 class="mb-0" style="font-family: 'Nunito', sans-serif;">{{ poll.title }}</h2>
+        <div class="col-lg-8">
+            <h1 class="text-center mb-5 display-3 fw-bold text-white animate__animated animate__fadeInDown">{{ poll.title }}</h1>
+
+            <div class="card shadow-lg rounded-lg mb-5 animate__animated animate__fadeInUp overflow-hidden">
+                <div class="card-header bg-primary text-white p-4 rounded-top">
+                    <h2 class="h3 mb-0 fw-bold">{{ poll.question }}</h2>
                 </div>
-                {% if poll.image %}
-                    <img src="{{ poll.image.url }}" alt="{{ poll.title }}" class="img-fluid rounded" style="max-height: 300px; margin: 20px auto;">
-                {% endif %}
-                {% if user.is_authenticated and user_has_voted %}
-                    <a href="{% url 'poll_results' poll.id %}" class="btn btn-secondary w-100 mt-3">View Results</a>
-                {% else %}
-                    <form method="post" action="{% url 'vote' poll.id %}">
-                        {% csrf_token %}
-                        <p class="text-center" style="font-weight: bold; font-family: 'Nunito', sans-serif;">{{ poll.question }}</p>
-                        <div class="form-group">
-                            {{ form.as_p }}
+                <div class="card-body p-0">
+                    <div class="row g-0">
+                        <div class="col-md-4">
+                            {% if poll.image %}
+                            <img src="{{ poll.image.url }}" alt="{{ poll.title }}" class="img-fluid rounded-start h-100 object-fit-cover">
+                            {% else %}
+                            <img src="https://via.placeholder.com/400x300?text=No+Image" alt="No Image Available" class="img-fluid rounded-start h-100 object-fit-cover">
+                            {% endif %}
                         </div>
-                        <button type="submit" class="btn btn-primary w-100 mt-3" style="border-radius: 25px; padding: 10px 0; background-color: #007bff;">
-                            Submit Vote
-                        </button>
-                    </form>
-                {% endif %}
+                        <div class="col-md-8">
+                            <div class="card-body">
+                                <div class="row mb-4">
+                                    <div class="col-md-6">
+                                        <div class="d-flex align-items-center mb-2">
+                                            <i class="bi bi-person-circle fs-4 me-2 text-primary"></i>
+                                            <span class="fw-medium">Creator:</span>
+                                            <span class="badge bg-secondary ms-2">{{ poll.creator.username }}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% if user.is_authenticated and user_has_voted %}
+                                    <div class="alert alert-info" role="alert">
+                                        You have already voted in this poll.
+                                    </div>
+                                    <a href="{% url 'poll_results' poll.id %}" class="btn btn-primary btn-lg w-100 rounded-pill animate__animated animate__pulse">View Results</a>
+                                {% else %}
+                                    <form id="voteForm" method="post" action="{% url 'vote' poll.id %}">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="choice" id="selectedChoice">
+                                        <div class="form-group">
+                                            {% for option in poll.options.all %}
+                                                <div class="option-item mb-3 p-3 rounded-lg border animate__animated animate__fadeIn" style="--animate-delay: {{ forloop.counter|add:"-1" }}00ms;" data-option-id="{{ option.id }}">
+                                                    <h5 class="mb-0 fw-medium">{{ option.option_text }}</h5>
+                                                </div>
+                                            {% endfor %}
+                                        </div>
+                                    </form>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 </div>
 
 <!-- Floating Plus Button -->
-<a href="{% url 'create_poll' %}" class="btn btn-floating" id="floating-btn">
-    +
-    <i class="bi bi-plus"></i>
+<a href="{% url 'create_poll' %}" class="btn btn-floating animate-float" id="floating-btn">
+    <i class="bi bi-plus-lg"></i>
 </a>
+
+<style>
+    @keyframes float {
+        0% { transform: translateY(0px); }
+        50% { transform: translateY(-10px); }
+        100% { transform: translateY(0px); }
+    }
+
+    .animate-float {
+        animation: float 3s ease-in-out infinite;
+    }
+
+    .option-item {
+        transition: all 0.3s ease;
+        cursor: pointer;
+    }
+
+    .option-item:hover {
+        transform: translateX(10px);
+        background-color: rgba(74, 144, 226, 0.1);
+    }
+
+    .option-item.selected {
+        background-color: var(--primary-color);
+        color: white;
+    }
+
+    .object-fit-cover {
+        object-fit: cover;
+    }
+
+    .btn-floating {
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        background-color: var(--accent-color);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        transition: all 0.3s ease;
+        z-index: 1000;
+    }
+
+    .btn-floating:hover {
+        background-color: var(--primary-color);
+        transform: scale(1.1) rotate(90deg);
+    }
+</style>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const optionItems = document.querySelectorAll('.option-item');
+    const voteForm = document.getElementById('voteForm');
+    const selectedChoiceInput = document.getElementById('selectedChoice');
+
+    optionItems.forEach(item => {
+        item.addEventListener('click', function() {
+            // Remove 'selected' class from all options
+            optionItems.forEach(opt => opt.classList.remove('selected'));
+            
+            // Add 'selected' class to clicked option
+            this.classList.add('selected');
+            
+            // Set the selected choice value
+            selectedChoiceInput.value = this.dataset.optionId;
+            
+            // Submit the form after a short delay
+            setTimeout(() => {
+                voteForm.submit();
+            }, 300);
+        });
+    });
+});
+</script>
 {% endblock %}
